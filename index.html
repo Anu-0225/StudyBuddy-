@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+    <title>Study Buddy - Your Personal Learning Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            background-image: url('https://uploads.onecompiler.io/42sycu8qc/442atzpm4/study%20image%201.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .time-display {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .study-timer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* Page Content */
+        .page {
+            display: none;
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Login Page */
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            color: #667eea;
+            margin-bottom: 2rem;
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        /* Registration Page */
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-small {
+            width: auto;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Home Page */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+            background-image: url('https://uploads.onecompiler.io/42sycu8qc/442atzpm4/study%20image%201.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            margin: 2rem 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .how-it-works {
+            padding: 4rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 2rem 0;
+            border-radius: 20px;
+            background-image: url('https://uploads.onecompiler.io/42sycu8qc/42qdzsugc/study%201.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .quote-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+            font-style: italic;
+        }
+
+        /* Video Links Section */
+        .video-links-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .video-links-section.active {
+            display: block;
+        }
+
+        .video-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .video-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .video-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .video-link:before {
+            content: "🎥 ";
+            margin-right: 0.5rem;
+        }
+
+        /* Progress Charts */
+        .chart-container {
+            margin: 2rem 0;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            height: 200px;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px 5px 0 0;
+            min-width: 40px;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        /* Line Chart for Progress */
+        .line-chart {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-line {
+            stroke: #667eea;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .chart-point {
+            fill: #667eea;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        .chart-grid {
+            stroke: #e1e5e9;
+            stroke-width: 1;
+        }
+
+        /* Study Plan Table */
+        .study-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .study-table th,
+        .study-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .study-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .study-table input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-upcoming {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Quiz */
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-setup {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-question {
+            margin-bottom: 2rem;
+        }
+
+        .quiz-options {
+            list-style: none;
+        }
+
+        .quiz-options li {
+            margin: 0.5rem 0;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .quiz-options li:hover {
+            background: #f8f9fa;
+        }
+
+        .quiz-options li.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .quiz-options li.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .quiz-options li.neutral {
+            background: #e2e3e5;
+        }
+
+        .quiz-options input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .quiz-feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Summarizer */
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .summary-output {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            min-height: 200px;
+            border: 1px solid #e1e5e9;
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .progress-ring-circle {
+            stroke: #e1e5e9;
+            stroke-width: 8;
+            fill: transparent;
+            r: 52;
+            cx: 60;
+            cy: 60;
+        }
+
+        .progress-ring-progress {
+            stroke: #667eea;
+            stroke-width: 8;
+            fill: transparent;
+            r: 52;
+            cx: 60;
+            cy: 60;
+            stroke-dasharray: 326.73;
+            stroke-dashoffset: 326.73;
+            transform: rotate(-90deg);
+            transform-origin: 60px 60px;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .register-container, .login-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.6);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.8);
+        }
+
+        /* Firefox scrollbar */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(102, 126, 234, 0.6) rgba(255, 255, 255, 0.1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .edit-mode input {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .save-indicator {
+            color: #28a745;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .timer-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .timer-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .timer-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar" style="display: none;">
+        <div class="nav-content">
+            <div class="logo">Study Buddy</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+                <li><a href="#" onclick="showPage('progress')">Progress</a></li>
+                <li><a href="#" onclick="showPage('study-plan')">Study Plan</a></li>
+                <li><a href="#" onclick="showPage('summarizer')">Summarizer</a></li>
+                <li><a href="#" onclick="showPage('profile')">Profile</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="study-timer" id="studyTimer">00:00:00</div>
+                <div class="time-display" id="timeDisplay">00:00:00</div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Page -->
+    <div id="login" class="page active">
+        <div class="container">
+            <div class="login-container">
+                <h2>Welcome to Study Buddy</h2>
+                <div class="login-tabs">
+                    <button class="login-tab active" onclick="switchLoginTab('signin')">Sign In</button>
+                    <button class="login-tab" onclick="switchLoginTab('signup')">Sign Up</button>
+                </div>
+                
+                <!-- Sign In Form -->
+                <form id="signinForm" class="login-form active">
+                    <div class="form-group">
+                        <label for="signinEmail">Email</label>
+                        <input type="email" id="signinEmail" name="signinEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" id="signinPassword" name="signinPassword" required>
+                    </div>
+                    <button type="submit" class="btn">Sign In</button>
+                </form>
+                
+                <!-- Sign Up Form -->
+                <form id="signupForm" class="login-form">
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" name="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" name="signupPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn">Sign Up</button>
+                </form>
+                
+                <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                    Demo credentials: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="76131b171f1a3612131b195815191b">[email&#160;protected]</a> / password123
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Page -->
+    <div id="register" class="page">
+        <div class="container">
+            <div class="register-container">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #667eea;">Complete Your Profile</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #666;">Let's get to know you better to create your personalized learning experience.</p>
+                
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studyLevel">Level of Study *</label>
+                        <select id="studyLevel" name="studyLevel" required>
+                            <option value="">Select your level</option>
+                            <option value="school">School</option>
+                            <option value="high-school">High School</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="medical">Medical</option>
+                            <option value="business">Business</option>
+                            <option value="arts">Arts</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subjects">Subjects (comma-separated) *</label>
+                        <input type="text" id="subjects" name="subjects" placeholder="e.g., Mathematics, Physics, Chemistry" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studyTime">Available Study Time (hours per day) *</label>
+                        <input type="number" id="studyTime" name="studyTime" min="1" max="24" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="examDate">Final Exam Date (optional)</label>
+                        <input type="date" id="examDate" name="examDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="studyGoals">Study Goals</label>
+                        <textarea id="studyGoals" name="studyGoals" rows="4" placeholder="What do you want to achieve?"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Complete Setup</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home" class="page">
+        <div class="container">
+            <div class="hero">
+                <h1>Study Buddy</h1>
+                <p>Your Personal Learning Companion</p>
+                <button class="btn" onclick="showPage('dashboard')" style="width: auto; padding: 1rem 3rem;">Get Started</button>
+            </div>
+            
+            <div class="how-it-works">
+                <div class="container">
+                    <h2 style="text-align: center; color: white; margin-bottom: 1rem;">How It Works</h2>
+                    <div class="cards-grid">
+                        <div class="card" onclick="showPage('study-plan')">
+                            <div class="card-icon">📚</div>
+                            <h3>Personalized Plans</h3>
+                            <p>Get customized study schedules based on your goals and available time.</p>
+                        </div>
+                        <div class="card" onclick="showPage('dashboard')">
+                            <div class="card-icon">🧠</div>
+                            <h3>Adaptive Quizzes</h3>
+                            <p>Take interactive quizzes that adapt to your learning progress.</p>
+                        </div>
+                        <div class="card" onclick="showPage('progress')">
+                            <div class="card-icon">📊</div>
+                            <h3>Progress Tracking</h3>
+                            <p>Monitor your learning journey with detailed analytics and insights.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page">
+        <div class="container">
+            <h1 style="color: white; text-align: center; margin-bottom: 2rem;" id="welcomeMessage">Welcome back!</h1>
+            
+            <div class="quote-box">
+                <p id="dailyQuote">"The only way to learn mathematics is to do mathematics." – Paul Halmos</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Today's Study Session</h3>
+                    <div id="todaySession">
+                        <p>Math – 60 mins, Physics – 45 mins</p>
+                        <button class="btn btn-small" onclick="showQuizSetup()" style="margin-top: 1rem;">Start Quiz</button>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" onclick="startStudyTimer()" id="startTimerBtn">Start Timer</button>
+                        <button class="timer-btn" onclick="pauseStudyTimer()" id="pauseTimerBtn" disabled>Pause</button>
+                        <button class="timer-btn" onclick="resetStudyTimer()" id="resetTimerBtn">Reset</button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>Today's Progress</h3>
+                    <div id="todayProgress">
+                        <div style="text-align: center; margin: 1rem 0;">
+                            <svg class="progress-ring">
+                                <circle class="progress-ring-circle"></circle>
+                                <circle class="progress-ring-progress" id="progressCircle"></circle>
+                            </svg>
+                            <p id="progressText" style="margin-top: 1rem;">0% Complete</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Links Section -->
+            <div class="video-links-section" id="videoLinksSection">
+                <h3 style="color: #667eea; margin-bottom: 1rem;">📹 Recommended Study Videos</h3>
+                <p style="margin-bottom: 1rem; color: #666;" id="videoSubjectTitle">Select a subject in the quiz to see recommended videos</p>
+                <div class="video-links" id="videoLinksContainer">
+                    <!-- Video links will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Quiz Setup Section -->
+            <div id="quizSetup" class="quiz-setup" style="display: none;">
+                <h3>Quiz Setup</h3>
+                <div class="form-group">
+                    <label for="quizSubject">Select Subject:</label>
+                    <select id="quizSubject" onchange="updateVideoLinks()">
+                        <option value="">Choose a subject</option>
+                        <option value="data-structures">Data Structures</option>
+                        <option value="computer-organization">Computer Organization</option>
+                        <option value="operating-systems">Operating Systems</option>
+                        <option value="database-management">Database Management</option>
+                        <option value="computer-networks">Computer Networks</option>
+                        <option value="software-engineering">Software Engineering</option>
+                        <option value="discrete-mathematics">Discrete Mathematics</option>
+                        <option value="engineering-mathematics">Engineering Mathematics</option>
+                        <option value="engineering-physics">Engineering Physics</option>
+                        <option value="artificial-intelligence">Artificial Intelligence</option>
+                        <option value="cybersecurity">Cybersecurity</option>
+                        <option value="cloud-computing">Cloud Computing</option>
+                        <option value="web-technologies">Web Technologies</option>
+                        <option value="mobile-development">Mobile Development</option>
+                        <option value="theory-computation">Theory of Computation</option>
+                        <option value="compiler-design">Compiler Design</option>
+                        <option value="computer-graphics">Computer Graphics</option>
+                        <option value="mathematics">Mathematics</option>
+                        <option value="physics">Physics</option>
+                        <option value="chemistry">Chemistry</option>
+                        <option value="biology">Biology</option>
+                        <option value="history">History</option>
+                        <option value="english">English</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionCount">Number of Questions:</label>
+                    <select id="questionCount">
+                        <option value="5">5 Questions</option>
+                        <option value="10">10 Questions</option>
+                        <option value="15">15 Questions</option>
+                        <option value="20">20 Questions</option>
+                    </select>
+                </div>
+                <button class="btn btn-small" onclick="startCustomQuiz()">Start Quiz</button>
+            </div>
+            
+            <!-- Quiz Section -->
+            <div id="quizSection" class="quiz-container" style="display: none;">
+                <h3>Quiz Time!</h3>
+                <div id="quizProgress" style="margin-bottom: 1rem;">
+                    <div style="background: #e1e5e9; border-radius: 10px; height: 10px;">
+                        <div id="quizProgressBar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; border-radius: 10px; transition: width 0.3s;"></div>
+                    </div>
+                    <p id="quizProgressText" style="text-align: center; margin-top: 0.5rem;">Question 1 of 5</p>
+                </div>
+                <div id="quizContent"></div>
+                <div id="quizFeedback"></div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="btn btn-small" onclick="previousQuestion()" id="prevBtn" style="display: none;">Previous</button>
+                    <button class="btn btn-small" onclick="nextQuestion()" id="nextBtn">Next Question</button>
+                    <button class="btn btn-small" onclick="submitQuiz()" id="submitQuizBtn" style="display: none;">Submit Quiz</button>
+                </div>
+                <div id="quizResults" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Snapshot Page -->
+    <div id="progress" class="page">
+        <div class="container">
+            <div class="dashboard-card" style="margin-bottom: 2rem;">
+                <h2 style="color: #667eea; margin-bottom: 2rem;">Progress Snapshot</h2>
+                
+                <div class="dashboard-grid">
+                    <div>
+                        <h3>Performance Stats</h3>
+                        <ul style="list-style: none; padding: 0;" id="performanceStats">
+                            <li style="margin: 1rem 0;"><strong>Overall Score:</strong> <span id="overallScore">0%</span></li>
+                            <li style="margin: 1rem 0;"><strong>Weekly Improvement:</strong> <span id="weeklyImprovement">+0%</span></li>
+                            <li style="margin: 1rem 0;"><strong>Top Subject:</strong> <span id="topSubject">Not available</span></li>
+                            <li style="margin: 1rem 0;"><strong>Quizzes Completed:</strong> <span id="quizzesCompleted">0</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3>Scores by Subject</h3>
+                        <div class="bar-chart" id="subjectScores">
+                            <!-- Dynamic bars will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Improvement Over Time</h3>
+                    <div class="line-chart" id="progressChart">
+                        <svg width="100%" height="260" viewBox="0 0 800 260">
+                            <!-- Grid lines -->
+                            <g class="chart-grid">
+                                <line x1="50" y1="20" x2="50" y2="220"></line>
+                                <line x1="50" y1="220" x2="750" y2="220"></line>
+                                <line x1="50" y1="170" x2="750" y2="170" opacity="0.3"></line>
+                                <line x1="50" y1="120" x2="750" y2="120" opacity="0.3"></line>
+                                <line x1="50" y1="70" x2="750" y2="70" opacity="0.3"></line>
+                            </g>
+                            <!-- Progress line will be drawn here -->
+                            <polyline class="chart-line" id="progressLine" points=""></polyline>
+                            <!-- Data points will be added here -->
+                            <g id="progressPoints"></g>
+                            <!-- Labels -->
+                            <text x="25" y="25" font-size="12" fill="#666">100%</text>
+                            <text x="25" y="75" font-size="12" fill="#666">75%</text>
+                            <text x="25" y="125" font-size="12" fill="#666">50%</text>
+                            <text x="25" y="175" font-size="12" fill="#666">25%</text>
+                            <text x="25" y="225" font-size="12" fill="#666">0%</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Plan Page -->
+    <div id="study-plan" class="page">
+        <div class="container">
+            <div class="dashboard-card">
+                <h2 style="color: #667eea; margin-bottom: 2rem;" id="studyPlanTitle">Study Plan</h2>
+                
+                <div class="dashboard-card" style="margin-bottom: 2rem;">
+                    <h3>Daily Plan - Today</h3>
+                    <div id="dailyPlan">
+                        <div style="display: flex; gap: 1rem; margin: 1rem 0; align-items: center;">
+                            <input type="text" value="Mathematics - Derivatives" style="flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="time" value="14:00" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                            <span>60 mins</span>
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin: 1rem 0; align-items: center;">
+                            <input type="text" value="Physics - Kinematics" style="flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="time" value="15:30" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                            <span>45 mins</span>
+                        </div>
+                        <button class="btn btn-small" onclick="addDailyTask()">+ Add Task</button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Weekly Overview</h3>
+                    <div>
+                        <button class="btn btn-small" onclick="toggleEditMode()" id="editWeeklyBtn">Edit Plan</button>
+                        <button class="btn btn-small" onclick="saveWeeklyPlan()" id="saveWeeklyBtn" style="display: none;">Save Changes</button>
+                    </div>
+                </div>
+                <table class="study-table" id="weeklyTable">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Goal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weeklyTableBody">
+                        <tr>
+                            <td>Monday</td>
+                            <td><span class="goal-text">Polynomial Functions</span><input type="text" class="goal-input" value="Polynomial Functions" style="display: none;"></td>
+                            <td><span class="status-badge status-progress">In Progress</span></td>
+                        </tr>
+                        <tr>
+                            <td>Tuesday</td>
+                            <td><span class="goal-text">Limits & Continuity</span><input type="text" class="goal-input" value="Limits & Continuity" style="display: none;"></td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Wednesday</td>
+                            <td><span class="goal-text">Kinematics</span><input type="text" class="goal-input" value="Kinematics" style="display: none;"></td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                        </tr>
+                        <tr>
+                            <td>Thursday</td>
+                            <td><span class="goal-text">Derivatives</span><input type="text" class="goal-input" value="Derivatives" style="display: none;"></td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                        </tr>
+                        <tr>
+                            <td>Friday</td>
+                            <td><span class="goal-text">Practice Quiz</span><input type="text" class="goal-input" value="Practice Quiz" style="display: none;"></td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                        </tr>
+                        <tr>
+                            <td>Saturday</td>
+                            <td><span class="goal-text">Review Weak Areas</span><input type="text" class="goal-input" value="Review Weak Areas" style="display: none;"></td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sunday</td>
+                            <td><span class="goal-text">Rest</span><input type="text" class="goal-input" value="Rest" style="display: none;"></td>
+                            <td><span class="status-badge status-upcoming">Upcoming</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summarizer Page -->
+    <div id="summarizer" class="page">
+        <div class="container">
+            <div class="dashboard-card">
+                <h2 style="color: #667eea; margin-bottom: 2rem;">AI Summarizer</h2>
+                
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
+                    <h3>Upload Document</h3>
+                    <p>Click to upload PDF, DOCX, or TXT files</p>
+                    <input type="file" id="fileInput" style="display: none;" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)">
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0; color: #666;">OR</div>
+                
+                <div class="form-group">
+                    <label for="linkInput">Paste a Link</label>
+                    <input type="url" id="linkInput" placeholder="https://example.com/article">
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0; color: #666;">OR</div>
+                
+                <div class="form-group">
+                    <label for="textInput">Paste Text Content</label>
+                    <textarea id="textInput" rows="6" placeholder="Paste your text content here..."></textarea>
+                </div>
+                
+                <button class="btn" onclick="generateSummary()">Generate Summary</button>
+                
+                <div class="summary-output" id="summaryOutput">
+                    <h4>Summary will appear here...</h4>
+                    <p>Upload a document, paste a link, or enter text content, then click "Generate Summary" to get a concise summary of the key points.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="page">
+        <div class="container">
+            <div class="dashboard-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2 style="color: #667eea;">Profile</h2>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="profileName">Full Name</label>
+                        <input type="text" id="profileName" name="profileName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileLevel">Level of Study</label>
+                        <select id="profileLevel" name="profileLevel">
+                            <option value="school">School</option>
+                            <option value="high-school">High School</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="medical">Medical</option>
+                            <option value="business">Business</option>
+                            <option value="arts">Arts</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileSubjects">Subjects</label>
+                        <input type="text" id="profileSubjects" name="profileSubjects">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileStudyTime">Available Study Time (hours per day)</label>
+                        <input type="number" id="profileStudyTime" name="profileStudyTime" min="1" max="24">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileExamDate">Final Exam Date</label>
+                        <input type="date" id="profileExamDate" name="profileExamDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileGoals">Study Goals</label>
+                        <textarea id="profileGoals" name="profileGoals" rows="4"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" class="btn" onclick="editProfile()" id="editBtn">Edit Profile</button>
+                        <button type="button" class="btn" onclick="saveProfile()" id="saveBtn" style="display: none;">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Global variables
+        let userData = {};
+        let quizData = [];
+        let currentQuiz = 0;
+        let quizAnswers = {};
+        let isEditing = false;
+        let isWeeklyEditing = false;
+        let userProgress = {
+            scores: [],
+            subjects: {},
+            totalQuizzes: 0,
+            averageScore: 0
+        };
+        let studyTimerInterval = null;
+        let studyTimerSeconds = 0;
+        let isTimerRunning = false;
+
+        // Subject video links mapping
+        const subjectVideoLinks = {
+            "data-structures": [
+                "https://youtu.be/GLT1DokhDTQ?si=DP72mrIzq3DOgtSn",
+                "https://youtu.be/d_XvFOkQz5k?si=7yMGEuvpkjsCchu9"
+            ],
+            "computer-organization": [
+                "https://youtu.be/Ol8D69VKX2k?si=uyoI16sjyOcvnAPn"
+            ],
+            "operating-systems": [
+                "https://youtu.be/ACsLvXuaKxw?si=u_QFo0EO8uN2nv5G"
+            ],
+            "database-management": [
+                "https://youtu.be/j09EQ-xlh88?si=sggBSw_n6L4rYstZ"
+            ],
+            "computer-networks": [
+                "https://youtu.be/bY5OfBrBg1M?si=62vWYYEZUybGkRxE"
+            ],
+            "software-engineering": [
+                "https://youtu.be/Fi3_BjVzpqk?si=Wbr8nP72Q8YqgMWz"
+            ],
+            "discrete-mathematics": [
+                "https://youtu.be/q4L-wUF3yig?si=bPciETieqJK5EYN8"
+            ],
+            "engineering-mathematics": [
+                "https://youtu.be/WFWt-egkCtY"
+            ],
+            "engineering-physics": [
+                "https://youtu.be/e-kZm-UU_jk?si=dMYEK1hKihrh_LKR"
+            ],
+            "artificial-intelligence": [
+                "https://youtu.be/oV74Najm6Nc?si=XwN_DifQU-rGAwOu"
+            ],
+            "cybersecurity": [
+                "https://youtu.be/ey4dXseAODE?si=t-vyfgnJxvgEDx5-"
+            ],
+            "cloud-computing": [
+                "https://youtu.be/M988_fsOSWo?si=ar1svyqigTsnVW0j"
+            ],
+            "web-technologies": [
+                "https://youtu.be/xFmOdLsw33A?si=QEylUQcp5nuVv7tW"
+            ],
+            "mobile-development": [
+                "https://youtu.be/UiG3_2I9JAg?si=_AZbIxjadB4wwtdQ"
+            ],
+            "theory-computation": [
+                "https://youtu.be/H0t9v9elH68?si=FOt2K31Aqo9ZQxEZ"
+            ],
+            "compiler-design": [
+                "https://youtu.be/q3O-GrCrosw?si=PDPP8KDBdtjaICvv"
+            ],
+            "computer-graphics": [
+                "https://youtu.be/1SA03g7MBKg",
+                "https://youtu.be/LZTp5VgnqC4"
+            ],
+            "mathematics": [
+                "https://youtu.be/1srQ7Mq_ToI?si=tZM3njMHlBP5y8Ty"
+            ],
+            "physics": [
+                "https://youtu.be/kGBv_vZFnvw?si=YAK27GIzAQLn3WGK"
+            ],
+            "chemistry": [
+                "https://youtu.be/5iTOphGnCtg?si=FpDVVquphMuTDstp"
+            ],
+            "biology": [
+                "https://youtu.be/3tisOnOkwzo?si=ir-faZnLVfWwoTEg"
+            ],
+            "history": [
+                "https://youtu.be/ovkcCuBezz0?si=jm4sburTnVVEopbd"
+            ],
+            "english": [
+                "https://youtu.be/tsvOWRlu7_s?si=iStl0yGmKHzvkuRp"
+            ]
+        };
+
+        // Enhanced quiz questions database
+        const quizQuestions = {
+            "data-structures": [
+                { question: "What is the time complexity for inserting an element at the beginning of a singly linked list?", options: ["O(n)", "O(log n)", "O(1)", "O(n²)"], correct: 2 },
+                { question: "Which data structure is typically used for implementing a Breadth-First Search (BFS) algorithm?", options: ["Stack", "Queue", "Array", "Hash Table"], correct: 1 },
+                { question: "What is the worst-case time complexity of searching in a binary search tree?", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], correct: 2 },
+                { question: "Which operation is NOT typically supported by a stack?", options: ["Push", "Pop", "Peek", "Random Access"], correct: 3 },
+                { question: "What is the space complexity of merge sort?", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], correct: 2 },
+                { question: "What is the time complexity for inserting an element at the beginning of a singly linked list?", options: ["O(n)", "O(log n)", "O(1)", "O(n²)"], correct: 2 },
+                { question: "Which data structure is typically used for implementing a Breadth-First Search (BFS) algorithm?", options: ["Stack", "Queue", "Array", "Hash Table"], correct: 1 },
+                { question: "In a complete binary tree with n nodes, what is the maximum height?", options: ["O(n)", "O(log n)", "O(n²)", "O(1)"], correct: 1 },
+                { question: "Which sorting algorithm has the worst-case time complexity of O(n²) but is often faster in practice for small datasets?", options: ["Merge Sort", "Quick Sort", "Insertion Sort", "Heap Sort"], correct: 2 },
+                { question: "What is the main advantage of a hash table over an array for data retrieval?", options: ["Hash tables have a fixed size", "Hash tables offer faster average-case retrieval time O(1)", "Arrays are more memory-efficient", "Hash tables are always sorted"], correct: 1 },
+                { question: "Which data structure is used to handle function calls in recursion?", options: ["Queue", "Stack", "Heap", "Linked list"], correct: 1 },
+                { question: "A graph algorithm that finds the shortest path from a single source to all other vertices in a non-negative weighted graph is called:", options: ["Prim's Algorithm", "Kruskal's Algorithm", "Dijkstra's Algorithm", "Floyd-Warshall Algorithm"], correct: 2 },
+                { question: "What is the primary characteristic of a queue?", options: ["Last-In, First-Out (LIFO)", "First-In, Last-Out (FILO)", "First-In, First-Out (FIFO)", "Last-In, Last-Out (LILO)"], correct: 2 },
+                { question: "The process of visiting each node in a tree data structure is called:", options: ["Sorting", "Searching", "Traversal", "Hashing"], correct: 2 },
+                { question: "What is the time complexity of a linear search algorithm on an array of size n?", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], correct: 2 }
+           
+            ],
+            "computer-organization": [
+                { question: "What is the primary function of the Control Unit (CU) in a CPU?", options: ["To perform arithmetic and logical operations", "To store data temporarily", "To manage and direct the flow of instructions within the CPU", "To communicate with I/O devices"], correct: 2 },
+                { question: "What does ALU stand for?", options: ["Arithmetic Logic Unit", "Advanced Logic Unit", "Automatic Logic Unit", "Arithmetic Linear Unit"], correct: 0 },
+                { question: "Which memory type is closest to the CPU?", options: ["RAM", "Cache", "Hard Disk", "ROM"], correct: 1 },
+                { question: "What is the purpose of the program counter (PC)?", options: ["Count the number of programs", "Store the address of the next instruction", "Count execution cycles", "Store program data"], correct: 1 },
+                { question: "What is pipelining in computer architecture?", options: ["A method to store data", "A technique to execute multiple instructions simultaneously", "A way to organize memory", "A type of cache"], correct: 1 },
+                { question: "What is the primary function of the Control Unit (CU) in a CPU?", options: ["To perform arithmetic and logical operations", "To store data temporarily", "To manage and direct the flow of instructions within the CPU", "To communicate with I/O devices"], correct: 2 },
+                { question: "What is the purpose of the Memory Address Register (MAR)?", options: ["To store the data being read from or written to memory", "To store the address of the memory location to be accessed", "To store the instruction being executed", "To store the result of an arithmetic operation"], correct: 1 },
+                { question: "What is the main characteristic of a RISC (Reduced Instruction Set Computer) architecture?", options: ["A large number of complex instructions", "A small number of simple, highly optimized instructions", "Instructions of variable length", "A complex instruction set"], correct: 1 },
+                { question: "Which of the following is a type of cache memory?", options: ["RAM", "ROM", "L1, L2, and L3 cache", "Hard Disk Drive"], correct: 2 },
+                { question: "What is the purpose of an instruction register (IR)?", options: ["It holds the address of the next instruction to be executed", "It holds the instruction that is currently being executed", "It holds the data that is being processed", "It holds the result of a calculation"], correct: 1 },
+                { question: "In a computer system, what does 'pipelining' refer to?", options: ["Executing multiple instructions at the same time", "A technique for parallel processing that allows multiple instructions to be in different stages of execution simultaneously", "Storing data in a cache", "Connecting multiple computers together"], correct: 1 },
+                { question: "Which of the following is a type of non-volatile memory?", options: ["DRAM", "SRAM", "ROM", "Cache memory"], correct: 2 },
+                { question: "The term 'bus' in computer architecture refers to:", options: ["A central processing unit", "A pathway for data transfer between different components", "A type of memory", "An input/output device"], correct: 1 },
+                { question: "What does the acronym 'CISC' stand for?", options: ["Complex Instruction Set Computer", "Common Instruction Set Computer", "Complex Interrupt System Computer", "Control Instruction Set Computer"], correct: 0 },
+                { question: "What is the function of the Memory Data Register (MDR)?", options: ["To hold the address of the memory location", "To hold the instruction currently being executed", "To hold the data that is being read from or written to memory", "To hold the program counter"], correct: 2 }
+           
+            ],
+            "operating-systems": [
+                { question: "What is the primary function of the process scheduler in an operating system?", options: ["To manage the allocation of memory", "To select which process to run next from the ready queue", "To handle I/O operations", "To manage file systems"], correct: 1 },
+                { question: "What is a deadlock in operating systems?", options: ["A process that runs forever", "A situation where processes wait indefinitely for resources", "A crashed program", "A memory leak"], correct: 1 },
+                { question: "Which scheduling algorithm gives the shortest average waiting time?", options: ["FCFS", "SJF", "Round Robin", "Priority"], correct: 1 },
+                { question: "What is virtual memory?", options: ["Memory that doesn't exist", "A memory management technique that uses disk space as RAM", "Cache memory", "ROM memory"], correct: 1 },
+                { question: "What is the purpose of system calls?", options: ["To call other programs", "To provide interface between user programs and OS", "To handle interrupts", "To manage hardware"], correct: 1 },
+                { question: "What is the primary function of the process scheduler in an operating system?", options: ["To manage the allocation of memory", "To select which process to run next from the ready queue", "To handle I/O operations", "To manage file systems"], correct: 1 },
+                { question: "Which of the following is a technique used by an operating system for managing memory?", options: ["Paging", "Spooling", "Polling", "Handshaking"], correct: 0 },
+                { question: "What is a 'semaphore' used for in an operating system?", options: ["For managing files", "For synchronization and mutual exclusion between processes", "For allocating CPU time", "For handling interrupts"], correct: 1 },
+                { question: "The concept of a 'virtual memory' is based on:", options: ["Swapping", "Paging", "Segmentation", "All of the above"], correct: 3 },
+                { question: "What is the main difference between a process and a thread?", options: ["A process is a lightweight entity, while a thread is a heavyweight one", "Threads within the same process share the same memory space, while processes have their own separate memory spaces", "A process is managed by the hardware, while a thread is managed by the operating system", "There is no difference"], correct: 1 },
+                { question: "Which process state transition occurs when a process is waiting for a resource, such as an I/O device?", options: ["Ready to Running", "Running to Ready", "Running to Waiting", "Waiting to Ready"], correct: 2 },
+                { question: "What is the 'kernel' in an operating system?", options: ["The file system", "The main user interface", "The central component of the operating system that manages resources and provides core services", "The memory manager"], correct: 2 },
+                { question: "Which of the following is a CPU scheduling algorithm?", options: ["First-Come, First-Served (FCFS)", "Least Recently Used (LRU)", "First-In, First-Out (FIFO)", "Round-Robin (RR)"], correct: 3 },
+                { question: "The technique of transferring the contents of main memory to a storage device to free up memory for other processes is called:", options: ["Paging", "Swapping", "Segmentation", "Thrashing"], correct: 1 },
+                { question: "What is 'disk scheduling' in an operating system?", options: ["The process of allocating disk space to files", "The process of scheduling which requests to access the disk will be serviced next", "The process of managing file permissions", "The process of formatting a disk"], correct: 1 }
+           
+            ],
+            "database-management": [
+                { question: "What does the acronym SQL stand for?", options: ["Structured Query Language", "Simple Query Language", "Standard Query Language", "System Query Language"], correct: 0 },
+                { question: "What is a primary key in a database?", options: ["The first column in a table", "A unique identifier for each record", "The most important data", "A password for the database"], correct: 1 },
+                { question: "What is normalization in databases?", options: ["Making data normal", "Organizing data to reduce redundancy", "Sorting data", "Backing up data"], correct: 1 },
+                { question: "What does ACID stand for in database transactions?", options: ["Atomicity, Consistency, Isolation, Durability", "Automatic, Consistent, Independent, Durable", "Atomic, Complete, Isolated, Definite", "Advanced, Consistent, Integrated, Dynamic"], correct: 0 },
+                { question: "What is a foreign key?", options: ["A key from another country", "A key that references primary key of another table", "An encrypted key", "A backup key"], correct: 1 },
+                { question: "What does the acronym SQL stand for?", options: ["Structured Query Language", "Simple Query Language", "Standard Query Language", "System Query Language"], correct: 0 },
+                { question: "Which normal form eliminates transitive dependencies?", options: ["First Normal Form (1NF)", "Second Normal Form (2NF)", "Third Normal Form (3NF)", "Fourth Normal Form (4NF)"], correct: 2 },
+                { question: "What are the four ACID properties that ensure database transactions are processed reliably?", options: ["Atomicity, Consistency, Isolation, Durability", "Accuracy, Consistency, Integrity, Durability", "Atomicity, Completeness, Isolation, Dependency", "Authentication, Consistency, Isolation, Durability"], correct: 0 },
+                { question: "What is the purpose of the WHERE clause in a SQL query?", options: ["To sort the results", "To filter records and extract only those that fulfill a specified condition", "To group records", "To join tables"], correct: 1 },
+                { question: "What is the difference between a LEFT JOIN and a FULL OUTER JOIN in SQL?", options: ["LEFT JOIN returns all records from the left table and matched records from the right table; FULL OUTER JOIN returns all records from both tables", "They are the same", "LEFT JOIN is faster", "FULL OUTER JOIN only returns matched records"], correct: 0 },
+                { question: "What is a primary key in a database?", options: ["A key that can be null", "A unique identifier for each record in a table", "A foreign key reference", "An index on a table"], correct: 1 },
+                { question: "What is normalization in database design?", options: ["The process of organizing data to reduce redundancy and improve data integrity", "The process of backing up data", "The process of indexing tables", "The process of creating views"], correct: 0 },
+                { question: "What is a foreign key?", options: ["A primary key from another table", "A field that links two tables together", "A unique constraint", "Both A and B"], correct: 3 },
+                { question: "What does CRUD stand for in database operations?", options: ["Create, Read, Update, Delete", "Copy, Read, Update, Delete", "Create, Retrieve, Update, Delete", "Create, Read, Upgrade, Delete"], correct: 0 },
+                { question: "What is a database index?", options: ["A backup of the database", "A data structure that improves the speed of data retrieval operations", "A type of constraint", "A database user"], correct: 1 },
+                { question: "What is the purpose of a router?", options: ["To store data", "A networking device that forwards data packets between computer networks", "To provide power to devices", "To display information"], correct: 1 },
+                ],
+            "computer-networks": [
+                { question: "What is the purpose of a router?", options: ["To store data", "A networking device that forwards data packets between computer networks", "To provide power to devices", "To display information"], correct: 1 },
+                { question: "What does TCP stand for?", options: ["Transfer Control Protocol", "Transmission Control Protocol", "Transport Control Protocol", "Technical Control Protocol"], correct: 1 },
+                { question: "Which layer of the OSI model handles routing?", options: ["Physical Layer", "Data Link Layer", "Network Layer", "Transport Layer"], correct: 2 },
+                { question: "What is the difference between TCP and UDP?", options: ["TCP is faster", "UDP is more reliable", "TCP is connection-oriented, UDP is connectionless", "No difference"], correct: 2 },
+                { question: "What is an IP address?", options: ["Internet Protocol address - unique identifier for devices on a network", "Internal Program address", "Internet Provider address", "Integrated Protocol address"], correct: 0 },
+                { question: "What is the purpose of a router?", options: ["To store data", "A networking device that forwards data packets between computer networks", "To provide power to devices", "To display information"], correct: 1 },
+                { question: "What is the primary function of the transport layer in the OSI model?", options: ["Physical transmission of data", "Process-to-process delivery of data across a network", "Data encryption", "User interface"], correct: 1 },
+                { question: "In a computer network, what does a 'Personal Area Network' (PAN) refer to?", options: ["A network covering a large geographical area", "A network used for communication among a user's personal devices", "A network for businesses", "A network for governments"], correct: 1 },
+                { question: "What does TCP stand for?", options: ["Transmission Control Protocol", "Transfer Control Protocol", "Transport Communication Protocol", "Terminal Control Protocol"], correct: 0 },
+                { question: "Which layer of the OSI model is responsible for routing?", options: ["Physical Layer", "Data Link Layer", "Network Layer", "Transport Layer"], correct: 2 },
+                { question: "What is the purpose of DNS?", options: ["To encrypt data", "To translate domain names to IP addresses", "To route packets", "To provide security"], correct: 1 },
+                { question: "What is the difference between TCP and UDP?", options: ["TCP is reliable, UDP is unreliable", "TCP is connection-oriented, UDP is connectionless", "TCP provides error checking, UDP doesn't", "All of the above"], correct: 3 },
+                { question: "What is an IP address?", options: ["A unique identifier for a device on a network", "A type of cable", "A network protocol", "A security measure"], correct: 0 },
+                { question: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "High Transfer Text Protocol", "HyperText Transport Protocol", "High Text Transfer Protocol"], correct: 0 },
+                { question: "What is a subnet mask?", options: ["A security feature", "Used to divide an IP address into network and host portions", "A type of cable", "A routing protocol"], correct: 1 }
+            ],
+            "software-engineering": [
+                { question: "What is the simplest model of the software development life cycle (SDLC) paradigm?", options: ["Agile model", "Waterfall model", "Spiral model", "V-model"], correct: 1 },
+                { question: "What is the main principle of Agile methodology?", options: ["Extensive documentation", "Following a rigid plan", "Responding to change over following a plan", "Individual work over teamwork"], correct: 2 },
+                { question: "What is version control?", options: ["Controlling software versions", "A system that tracks changes to files over time", "Controlling user access", "Managing software licenses"], correct: 1 },
+                { question: "What is the purpose of unit testing?", options: ["Testing the entire system", "Testing individual components or modules", "Testing user interface", "Testing network connections"], correct: 1 },
+                { question: "What is refactoring?", options: ["Rewriting entire code", "Improving code structure without changing functionality", "Adding new features", "Removing bugs"], correct: 1 },
+                 { question: "What is the simplest model of the software development life cycle (SDLC) paradigm?", options: ["Agile model", "Waterfall model", "Spiral model", "V-model"], correct: 1 },
+                { question: "What is the difference between cohesion and coupling in software design?", options: ["Cohesion measures module focus; coupling measures module dependencies", "They are the same thing", "Cohesion is about performance; coupling is about security", "Cohesion is external; coupling is internal"], correct: 0 },
+                { question: "What is unit testing?", options: ["Testing the entire system", "Testing individual components or modules", "Testing user interfaces", "Testing databases"], correct: 1 },
+                { question: "What is the purpose of version control systems?", options: ["To compile code", "To track changes in source code during software development", "To test software", "To deploy software"], correct: 1 },
+                { question: "What is agile methodology?", options: ["A rigid development process", "An iterative approach to software development", "A testing framework", "A programming language"], correct: 1 },
+                { question: "What is refactoring?", options: ["Adding new features", "Restructuring existing code without changing its external behavior", "Fixing bugs", "Writing documentation"], correct: 1 },
+                { question: "What is the purpose of design patterns?", options: ["To make code slower", "Reusable solutions to commonly occurring problems in software design", "To add complexity", "To reduce functionality"], correct: 1 },
+                { question: "What is continuous integration?", options: ["A development practice where developers integrate code into a shared repository frequently", "A testing method", "A deployment strategy", "A programming paradigm"], correct: 0 },
+                { question: "What is the difference between black box and white box testing?", options: ["Black box tests internal structure; white box tests functionality", "Black box tests functionality; white box tests internal structure", "They are the same", "Black box is automated; white box is manual"], correct: 1 },
+                { question: "What is technical debt?", options: ["Money owed to developers", "The implied cost of additional rework caused by choosing an easy solution now instead of a better approach", "A type of software license", "A project management tool"], correct: 1 }
+            ],
+            "discrete-mathematics": [
+                { question: "What is the Cartesian product of two sets, A and B?", options: ["The union of A and B", "The intersection of A and B", "The set of all possible ordered pairs where the first element is from A and the second from B", "The difference of A and B"], correct: 2 },
+                { question: "What is a graph in discrete mathematics?", options: ["A visual chart", "A collection of vertices connected by edges", "A mathematical function", "A type of tree"], correct: 1 },
+                { question: "What is the principle of mathematical induction used for?", options: ["Proving statements for all natural numbers", "Solving equations", "Finding derivatives", "Calculating integrals"], correct: 0 },
+                { question: "What is a binary relation?", options: ["A relation with two elements", "A subset of the Cartesian product of two sets", "A mathematical operation", "A type of function"], correct: 1 },
+                { question: "What is the difference between permutation and combination?", options: ["No difference", "Permutation considers order, combination doesn't", "Combination considers order, permutation doesn't", "They are the same thing"], correct: 1 },
+                { question: "What is the Cartesian product of two sets, A and B?", options: ["The union of A and B", "The intersection of A and B", "The set of all possible ordered pairs where the first element is from A and the second from B", "The difference of A and B"], correct: 2 },
+                { question: "How many elements are in the power set of a set with n elements?", options: ["n", "n²", "2^n", "n!"], correct: 2 },
+                { question: "What is a graph in discrete mathematics?", options: ["A visual representation of data", "A collection of vertices connected by edges", "A mathematical function", "A type of equation"], correct: 1 },
+                { question: "What is the principle of mathematical induction used for?", options: ["Proving statements about natural numbers", "Solving equations", "Finding derivatives", "Calculating integrals"], correct: 0 },
+                { question: "What is a binary relation?", options: ["A relation between two sets", "A relation with only two elements", "A relation that is either true or false", "A relation involving binary numbers"], correct: 0 },
+                { question: "What does it mean for a function to be bijective?", options: ["It is both injective and surjective", "It is neither injective nor surjective", "It is only injective", "It is only surjective"], correct: 0 },
+                { question: "What is a tree in graph theory?", options: ["A connected graph with no cycles", "A graph with many branches", "A hierarchical data structure", "A type of plant"], correct: 0 },
+                { question: "What is the pigeonhole principle?", options: ["If n items are put into m containers with n > m, then at least one container contains more than one item", "A principle about organizing data", "A method for solving equations", "A type of logical reasoning"], correct: 0 },
+                { question: "What is Boolean algebra?", options: ["Algebra with only true/false values", "Algebra invented by George Boole", "A branch of algebra dealing with logical operations", "All of the above"], correct: 3 },
+                { question: "What is a permutation?", options: ["An arrangement of objects in a specific order", "A combination of objects", "A type of function", "A mathematical operation"], correct: 0 }
+            ],
+            "engineering-mathematics": [
+                { question: "What is the derivative of sin(x)?", options: ["cos(x)", "-cos(x)", "sin(x)", "-sin(x)"], correct: 0 },
+                { question: "What is the integral of 1/x?", options: ["ln(x) + C", "x + C", "1/x² + C", "e^x + C"], correct: 0 },
+                { question: "What is a Laplace transform used for?", options: ["Solving differential equations", "Finding derivatives", "Calculating integrals", "Solving algebraic equations"], correct: 0 },
+                { question: "What is the Fourier series used for?", options: ["Solving equations", "Representing periodic functions as sum of sines and cosines", "Finding limits", "Calculating derivatives"], correct: 1 },
+                { question: "What is a matrix?", options: ["A movie", "A rectangular array of numbers", "A type of equation", "A geometric shape"], correct: 1 },
+                { question: "What is the derivative of sin(x)?", options: ["cos(x)", "-cos(x)", "sin(x)", "-sin(x)"], correct: 0 },
+                { question: "What is the integral of e^x?", options: ["e^x + C", "xe^x + C", "e^(x+1) + C", "ln(x) + C"], correct: 0 },
+                { question: "What is the Laplace transform of a unit step function?", options: ["1/s", "s", "1", "s²"], correct: 0 },
+                { question: "What is the determinant of a 2x2 matrix [[a,b],[c,d]]?", options: ["ad + bc", "ad - bc", "ac - bd", "ab - cd"], correct: 1 },
+                { question: "What is the Taylor series expansion of e^x around x=0?", options: ["1 + x + x²/2! + x³/3! + ...", "x + x²/2 + x³/3 + ...", "1 + x + x² + x³ + ...", "x + x² + x³ + ..."], correct: 0 },
+                { question: "What is the Fourier transform used for?", options: ["Converting time domain signals to frequency domain", "Solving differential equations", "Matrix operations", "Statistical analysis"], correct: 0 },
+                { question: "What is an eigenvalue?", options: ["A special value associated with a matrix", "The determinant of a matrix", "The trace of a matrix", "The inverse of a matrix"], correct: 0 },
+                { question: "What is the gradient of a scalar function?", options: ["A vector of partial derivatives", "A scalar value", "A matrix", "A constant"], correct: 0 },
+                { question: "What is the divergence theorem?", options: ["A theorem relating surface integrals to volume integrals", "A theorem about matrix operations", "A theorem about limits", "A theorem about derivatives"], correct: 0 },
+                { question: "What is a differential equation?", options: ["An equation involving derivatives of a function", "An equation with differences", "An algebraic equation", "A trigonometric equation"], correct: 0 }
+            
+            ],
+            "engineering-physics": [
+                { question: "What is Newton's second law of motion?", options: ["F = ma", "E = mc²", "v = u + at", "s = ut + ½at²"], correct: 0 },
+                { question: "What is the unit of electric current?", options: ["Volt", "Ampere", "Ohm", "Watt"], correct: 1 },
+                { question: "What is the speed of light in vacuum?", options: ["3 × 10⁸ m/s", "3 × 10⁶ m/s", "3 × 10¹⁰ m/s", "3 × 10⁴ m/s"], correct: 0 },
+                { question: "What is Ohm's law?", options: ["V = IR", "P = VI", "E = hf", "F = qE"], correct: 0 },
+                { question: "What is the first law of thermodynamics?", options: ["Energy cannot be created or destroyed", "Entropy always increases", "Heat flows from hot to cold", "PV = nRT"], correct: 0 },
+                 { question: "What is Newton's second law of motion?", options: ["F = ma", "E = mc²", "v = u + at", "s = ut + ½at²"], correct: 0 },
+                { question: "What is the speed of light in vacuum?", options: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10¹⁰ m/s", "3×10⁴ m/s"], correct: 0 },
+                { question: "What is Ohm's law?", options: ["V = IR", "P = IV", "F = qE", "E = hf"], correct: 0 },
+                { question: "What is the unit of electric current?", options: ["Volt", "Ampere", "Ohm", "Watt"], correct: 1 },
+                { question: "What is the principle of conservation of energy?", options: ["Energy cannot be created or destroyed, only transformed", "Energy always increases", "Energy always decreases", "Energy is constant in all systems"], correct: 0 },
+                { question: "What is electromagnetic induction?", options: ["The production of electric current by changing magnetic fields", "The production of magnetic fields by electric current", "The interaction between electric and magnetic fields", "The conversion of light to electricity"], correct: 0 },
+                { question: "What is the photoelectric effect?", options: ["The emission of electrons from a material when light hits it", "The absorption of light by materials", "The reflection of light", "The refraction of light"], correct: 0 },
+                { question: "What is quantum mechanics?", options: ["The study of matter and energy at the atomic and subatomic level", "The study of large-scale motion", "The study of thermodynamics", "The study of optics"], correct: 0 },
+                { question: "What is the uncertainty principle?", options: ["You cannot simultaneously know both position and momentum of a particle with perfect accuracy", "Energy is uncertain", "Time is uncertain", "Mass is uncertain"], correct: 0 },
+                { question: "What is entropy in thermodynamics?", options: ["A measure of disorder in a system", "A measure of energy", "A measure of temperature", "A measure of pressure"], correct: 0 }
+            
+            ],
+            "artificial-intelligence": [
+                { question: "In the context of AI and ML, what is a 'supervised learning' model?", options: ["A model that learns without any data", "A model that is trained on a labeled dataset", "A model that supervises other models", "A model that works without supervision"], correct: 1 },
+                { question: "What is a neural network?", options: ["A network of computers", "A computing system inspired by biological neural networks", "A type of database", "A programming language"], correct: 1 },
+                { question: "What is machine learning?", options: ["Teaching machines to think", "A subset of AI that learns from data", "Programming robots", "Building computers"], correct: 1 },
+                { question: "What is the difference between AI and ML?", options: ["No difference", "AI is broader, ML is a subset of AI", "ML is broader, AI is a subset of ML", "They are completely different"], correct: 1 },
+                { question: "What is deep learning?", options: ["Learning deeply", "A subset of ML using neural networks with multiple layers", "A type of database", "A programming technique"], correct: 1 },
+                { question: "In the context of AI and ML, what is a 'supervised learning' model?", options: ["A model that learns without any data", "A model that is trained on a labeled dataset", "A model that supervises other models", "A model that works without supervision"], correct: 1 },
+                { question: "What is a neural network?", options: ["A network of computers", "A computing system inspired by biological neural networks", "A type of database", "A programming language"], correct: 1 },
+                { question: "What is the difference between AI, ML, and Deep Learning?", options: ["They are all the same", "AI is the broadest concept, ML is a subset of AI, Deep Learning is a subset of ML", "ML is broader than AI", "Deep Learning is separate from AI"], correct: 1 },
+                { question: "What is overfitting in machine learning?", options: ["When a model performs too well on training data but poorly on new data", "When a model is too simple", "When a model trains too fast", "When a model uses too much memory"], correct: 0 },
+                { question: "What is a decision tree?", options: ["A tree-like model used for decision making and prediction", "A data structure", "A type of neural network", "A database schema"], correct: 0 },
+                { question: "What is reinforcement learning?", options: ["Learning through trial and error with rewards and penalties", "Learning with labeled data", "Learning without any data", "Learning by copying other models"], correct: 0 },
+                { question: "What is natural language processing (NLP)?", options: ["Processing natural resources", "The ability of computers to understand and process human language", "A type of programming language", "A database query language"], correct: 1 },
+                { question: "What is computer vision?", options: ["The ability of computers to see colors", "The field of AI that enables computers to interpret and understand visual information", "A type of monitor", "A graphics processing unit"], correct: 1 },
+                { question: "What is the Turing test?", options: ["A test of computer processing speed", "A test of a machine's ability to exhibit intelligent behavior equivalent to a human", "A test of memory capacity", "A test of graphics capability"], correct: 1 },
+                { question: "What is backpropagation?", options: ["A method for training neural networks by propagating errors backward", "A method for data backup", "A method for network communication", "A method for data compression"], correct: 0 }
+            
+            ],
+            "cybersecurity": [
+                { question: "What is the main principle of least privilege in cybersecurity?", options: ["Give users maximum access", "Give users only the minimum privileges necessary to perform their task", "Give all users the same privileges", "Give no privileges to anyone"], correct: 1 },
+                { question: "What is encryption?", options: ["Hiding data", "Converting data into a coded format", "Deleting data", "Copying data"], correct: 1 },
+                { question: "What is a firewall?", options: ["A physical wall", "A network security device that monitors traffic", "A type of virus", "A programming language"], correct: 1 },
+                { question: "What is phishing?", options: ["Catching fish", "A social engineering attack to steal sensitive information", "A type of encryption", "A network protocol"], correct: 1 },
+                { question: "What is malware?", options: ["Bad software", "Malicious software designed to harm systems", "Broken software", "Expensive software"], correct: 1 },
+{ question: "What is the main principle of least privilege in cybersecurity?", options: ["Give users maximum access", "Give users only the minimum privileges necessary to perform their task", "Give all users the same privileges", "Give no privileges to anyone"], correct: 1 },
+                { question: "What is encryption?", options: ["The process of converting data into a coded format to prevent unauthorized access", "The process of compressing data", "The process of backing up data", "The process of deleting data"], correct: 0 },
+                { question: "What is a firewall?", options: ["A physical wall", "A network security device that monitors and controls incoming and outgoing network traffic", "A type of malware", "A programming language"], correct: 1 },
+                { question: "What is phishing?", options: ["A type of fishing", "A cyber attack that uses disguised email to trick users into revealing sensitive information", "A network protocol", "A programming technique"], correct: 1 },
+                { question: "What is malware?", options: ["Good software", "Malicious software designed to harm or exploit computers", "A type of hardware", "A network device"], correct: 1 },
+                { question: "What is two-factor authentication (2FA)?", options: ["Using two passwords", "A security process that requires two different authentication factors", "Using two computers", "A type of encryption"], correct: 1 },
+                { question: "What is a VPN?", options: ["Very Private Network", "Virtual Private Network - creates a secure connection over the internet", "Verified Public Network", "Visual Programming Network"], correct: 1 },
+                { question: "What is social engineering in cybersecurity?", options: ["Engineering social media", "Psychological manipulation to trick people into divulging confidential information", "Building social networks", "A type of software engineering"], correct: 1 },
+                { question: "What is a DDoS attack?", options: ["Distributed Denial of Service - overwhelming a system with traffic", "Direct Data Operation System", "Digital Data Output Service", "Dynamic Database Operation System"], correct: 0 },
+                { question: "What is penetration testing?", options: ["Testing network penetration", "Authorized simulated cyber attacks to evaluate security", "Testing software performance", "Testing hardware durability"], correct: 1 }
+           
+            ],
+            "cloud-computing": [
+                { question: "In cloud computing, what is the key characteristic of Infrastructure as a Service (IaaS)?", options: ["Provides software applications", "Provides virtualized computing resources over the internet", "Provides development platforms", "Provides storage only"], correct: 1 },
+                { question: "What does SaaS stand for?", options: ["Software as a Service", "System as a Service", "Storage as a Service", "Security as a Service"], correct: 0 },
+                { question: "What is the main advantage of cloud computing?", options: ["It's free", "Scalability and cost-effectiveness", "It's faster", "It's more secure"], correct: 1 },
+                { question: "What is a public cloud?", options: ["A cloud for everyone", "Cloud services offered over the public internet", "A government cloud", "A free cloud service"], correct: 1 },
+                { question: "What is virtualization?", options: ["Making things virtual", "Creating virtual versions of physical resources", "A type of cloud", "A programming technique"], correct: 1 },
+{ question: "In cloud computing, what is the key characteristic of Infrastructure as a Service (IaaS)?", options: ["Provides software applications", "Provides virtualized computing resources over the internet", "Provides development platforms", "Provides storage only"], correct: 1 },
+                { question: "What does SaaS stand for?", options: ["Software as a Service", "System as a Service", "Security as a Service", "Storage as a Service"], correct: 0 },
+                { question: "What is the main benefit of cloud computing?", options: ["Higher costs", "Scalability and flexibility", "More complexity", "Less reliability"], correct: 1 },
+                { question: "What is a public cloud?", options: ["A cloud owned by the government", "Cloud services offered over the public internet and available to anyone", "A cloud that is free", "A cloud with public access to data"], correct: 1 },
+                { question: "What is the difference between public, private, and hybrid clouds?", options: ["No difference", "Public is open to all, private is for one organization, hybrid combines both", "Public is free, private costs money", "Public is less secure than private"], correct: 1 },
+                { question: "What is virtualization in cloud computing?", options: ["Making things virtual reality", "Creating virtual versions of physical computing resources", "A type of programming", "A security measure"], correct: 1 },
+                { question: "What is auto-scaling in cloud computing?", options: ["Automatically adjusting resources based on demand", "Manually scaling resources", "A type of load balancer", "A security feature"], correct: 0 },
+                { question: "What is a container in cloud computing?", options: ["A storage device", "A lightweight, portable unit that packages an application and its dependencies", "A type of virtual machine", "A network component"], correct: 1 },
+                { question: "What is serverless computing?", options: ["Computing without any servers", "A cloud computing model where the cloud provider manages the infrastructure", "A type of server", "Computing with many servers"], correct: 1 },
+                { question: "What is load balancing?", options: ["Balancing physical loads", "Distributing incoming network traffic across multiple servers", "A type of storage", "A security protocol"], correct: 1 }
+            
+            ],
+            "web-technologies": [
+                { question: "What does HTML stand for?", options: ["HyperText Markup Language", "High Tech Modern Language", "HyperText Modern Language", "High Text Markup Language"], correct: 0 },
+                { question: "What is CSS used for?", options: ["Programming logic", "Styling web pages", "Database management", "Server configuration"], correct: 1 },
+                { question: "What is JavaScript?", options: ["A markup language", "A programming language for web development", "A database", "A web server"], correct: 1 },
+                { question: "What is responsive web design?", options: ["Fast loading websites", "Websites that adapt to different screen sizes", "Interactive websites", "Secure websites"], correct: 1 },
+                { question: "What is the DOM?", options: ["Document Object Model - programming interface for web documents", "Data Object Management", "Dynamic Object Model", "Database Object Model"], correct: 0 },
+{ question: "What does HTML stand for?", options: ["HyperText Markup Language", "High Tech Modern Language", "HyperText Modern Language", "High Text Markup Language"], correct: 0 },
+                { question: "What is CSS used for?", options: ["Programming logic", "Styling and layout of web pages", "Database operations", "Server-side processing"], correct: 1 },
+                { question: "What is JavaScript?", options: ["A markup language", "A programming language for web development", "A database", "A web server"], correct: 1 },
+                { question: "What is the DOM?", options: ["Document Object Model - a programming interface for web documents", "Data Object Management", "Digital Output Method", "Dynamic Object Manipulation"], correct: 0 },
+                { question: "What is AJAX?", options: ["A programming language", "Asynchronous JavaScript and XML - for creating dynamic web pages", "A web server", "A database"], correct: 1 },
+                { question: "What is responsive web design?", options: ["Fast loading websites", "Web design that adapts to different screen sizes and devices", "Websites that respond quickly", "Interactive websites"], correct: 1 },
+                { question: "What is a REST API?", options: ["A type of database", "Representational State Transfer - an architectural style for web services", "A programming language", "A web browser"], correct: 1 },
+                { question: "What is the difference between GET and POST HTTP methods?", options: ["No difference", "GET retrieves data, POST sends data to be processed", "GET is faster than POST", "POST is more secure than GET"], correct: 1 },
+                { question: "What is JSON?", options: ["JavaScript Object Notation - a data interchange format", "A programming language", "A web server", "A database"], correct: 0 },
+                { question: "What is a web framework?", options: ["A physical structure", "A software framework designed to support web development", "A type of web browser", "A web hosting service"], correct: 1 }
+            
+            ],
+            "mobile-development": [
+                { question: "In the context of mobile application development, what is an 'activity' in Android?", options: ["A background process", "A single, focused task that a user can do, often with a user interface", "A type of database", "A network connection"], correct: 1 },
+                { question: "What is the main programming language for iOS development?", options: ["Java", "Swift", "Python", "C++"], correct: 1 },
+                { question: "What is React Native?", options: ["A database", "A framework for building mobile apps using React", "A web server", "A programming language"], correct: 1 },
+                { question: "What is the difference between native and hybrid mobile apps?", options: ["No difference", "Native apps are built for specific platforms, hybrid apps work across platforms", "Hybrid apps are faster", "Native apps are cheaper"], correct: 1 },
+                { question: "What is an APK file?", options: ["A text file", "Android Package file for installing Android apps", "An image file", "A video file"], correct: 1 },
+ { question: "In the context of mobile application development, what is an 'activity' in Android?", options: ["A background process", "A single, focused task that a user can do, often with a user interface", "A type of database", "A network connection"], correct: 1 },
+                { question: "What is the difference between native and hybrid mobile apps?", options: ["No difference", "Native apps are built for specific platforms, hybrid apps use web technologies", "Native apps are slower", "Hybrid apps are more expensive"], correct: 1 },
+                { question: "What is iOS development primarily done in?", options: ["Java", "Swift and Objective-C", "Python", "JavaScript"], correct: 1 },
+                { question: "What is Android development primarily done in?", options: ["Swift", "Java and Kotlin", "C++", "Python"], correct: 1 },
+                { question: "What is a mobile app lifecycle?", options: ["How long an app lives", "The series of states an app goes through from creation to destruction", "The development process", "The marketing strategy"], correct: 1 },
+                { question: "What is responsive design in mobile development?", options: ["Fast app performance", "Design that adapts to different screen sizes", "Apps that respond to user input", "Automatic app updates"], correct: 1 },
+                { question: "What is an APK file?", options: ["Android Package - the file format for Android apps", "Apple Package Kit", "Application Programming Kit", "Advanced Programming Kit"], correct: 0 },
+                { question: "What is cross-platform mobile development?", options: ["Developing for multiple platforms using a single codebase", "Developing only for Android", "Developing only for iOS", "Developing for desktop only"], correct: 0 },
+                { question: "What is a mobile app store?", options: ["A physical store", "A digital platform for distributing mobile apps", "A development tool", "A testing environment"], correct: 1 },
+                { question: "What is push notification?", options: ["A type of app", "A message sent to users' devices even when the app is not active", "A development framework", "A testing method"], correct: 1 }
+            
+            ],
+            "theory-computation": [
+                { question: "In the Theory of Computation, what is a Finite Automaton (FA)?", options: ["A computer program", "A mathematical model of a computer that has a finite number of states", "A type of algorithm", "A programming language"], correct: 1 },
+                { question: "What is a Turing machine?", options: ["A physical machine", "A theoretical computing machine that can simulate any algorithm", "A type of computer", "A programming language"], correct: 1 },
+                { question: "What is computational complexity?", options: ["How complex a program is", "The study of resources required to solve computational problems", "The difficulty of programming", "The size of a program"], correct: 1 },
+                { question: "What does P vs NP refer to?", options: ["Programming vs Non-Programming", "A major unsolved problem in computer science about problem complexity", "Positive vs Negative", "Public vs Private"], correct: 1 },
+                { question: "What is a regular expression?", options: ["A normal equation", "A sequence of characters that defines a search pattern", "A type of algorithm", "A programming construct"], correct: 1 },
+{ question: "In the Theory of Computation, what is a Finite Automaton (FA)?", options: ["A computer program", "A mathematical model of a computer that has a finite number of states", "A type of algorithm", "A programming language"], correct: 1 },
+                { question: "What is the difference between deterministic and non-deterministic finite automata?", options: ["No difference", "Deterministic has exactly one transition for each state-input pair, non-deterministic can have multiple", "Deterministic is faster", "Non-deterministic is more powerful"], correct: 1 },
+                { question: "What is a Turing machine?", options: ["A physical computer", "A theoretical computing machine that can simulate any computer algorithm", "A type of programming language", "A database system"], correct: 1 },
+                { question: "What does it mean for a problem to be decidable?", options: ["It's easy to solve", "There exists an algorithm that can solve it for all inputs", "It's impossible to solve", "It requires human intervention"], correct: 1 },
+                { question: "What is the halting problem?", options: ["A problem about stopping computers", "The problem of determining whether a program will halt or run forever", "A hardware issue", "A network problem"], correct: 1 },
+                { question: "What is computational complexity?", options: ["How complex a computer is", "The study of the resources needed to solve computational problems", "The difficulty of programming", "The size of computer programs"], correct: 1 },
+                { question: "What does P vs NP refer to?", options: ["Programming vs Non-Programming", "A major unsolved problem about the relationship between two complexity classes", "Public vs Non-Public", "Parallel vs Non-Parallel"], correct: 1 },
+                { question: "What is a context-free grammar?", options: ["Grammar without context", "A formal grammar where production rules can be applied regardless of context", "A programming language", "A type of automaton"], correct: 1 },
+                { question: "What is recursion in computation theory?", options: ["Repeating code", "A method where a function calls itself", "A type of loop", "A data structure"], correct: 1 },
+                { question: "What is the Church-Turing thesis?", options: ["A religious doctrine", "The hypothesis that any effectively calculable function is computable by a Turing machine", "A programming principle", "A mathematical theorem"], correct: 1 }
+            
+            ],
+            "compiler-design": [
+                { question: "In Compiler Design, what is the role of the lexical analyzer?", options: ["To optimize code", "To read the input source code and convert it into a sequence of tokens", "To generate machine code", "To handle errors"], correct: 1 },
+                { question: "What is parsing in compiler design?", options: ["Reading files", "Analyzing syntax and building parse trees", "Optimizing code", "Generating output"], correct: 1 },
+                { question: "What is the difference between compiler and interpreter?", options: ["No difference", "Compiler translates entire program before execution, interpreter executes line by line", "Interpreter is faster", "Compiler is newer"], correct: 1 },
+                { question: "What is semantic analysis in compilers?", options: ["Analyzing meaning and type checking", "Analyzing syntax", "Generating code", "Optimizing performance"], correct: 0 },
+                { question: "What is code optimization?", options: ["Making code shorter", "Improving code efficiency without changing functionality", "Removing bugs", "Adding features"], correct: 1 },
+{ question: "In Compiler Design, what is the role of the lexical analyzer?", options: ["To optimize code", "To read the input source code and convert it into a sequence of tokens", "To generate machine code", "To handle errors"], correct: 1 },
+                { question: "What is a token in compiler design?", options: ["A physical object", "The smallest unit of meaningful text in a program", "A type of variable", "A function"], correct: 1 },
+                { question: "What is parsing in compiler design?", options: ["Reading files", "The process of analyzing source code according to grammar rules", "Optimizing code", "Generating output"], correct: 1 },
+                { question: "What is the difference between a compiler and an interpreter?", options: ["No difference", "Compiler translates entire program before execution, interpreter executes line by line", "Compiler is faster", "Interpreter is more accurate"], correct: 1 },
+                { question: "What is semantic analysis in compilation?", options: ["Analyzing meaning and ensuring type correctness", "Analyzing syntax", "Generating code", "Optimizing performance"], correct: 0 },
+                { question: "What is code optimization?", options: ["Making code shorter", "Improving code to run faster or use less memory without changing functionality", "Adding comments", "Removing bugs"], correct: 1 },
+                { question: "What is a symbol table?", options: ["A table of symbols", "A data structure that stores information about identifiers in the program", "A type of array", "A debugging tool"], correct: 1 },
+                { question: "What is intermediate code generation?", options: ["Generating final code", "Creating an intermediate representation of the source code", "Optimizing code", "Error handling"], correct: 1 },
+                { question: "What is a parse tree?", options: ["A tree in a park", "A tree representation of the syntactic structure of source code", "A data structure", "A type of algorithm"], correct: 1 },
+                { question: "What is the purpose of the code generator phase?", options: ["To generate documentation", "To produce target machine code from intermediate representation", "To find errors", "To optimize code"], correct: 1 }
+            
+            ],
+            "computer-graphics": [
+                { question: "What is the most common color model used in computer graphics?", options: ["CMYK", "RGB (Red, Green, Blue)", "HSV", "LAB"], correct: 1 },
+                { question: "What is rasterization?", options: ["Creating raster images", "Converting vector graphics to pixel-based images", "A type of animation", "A graphics card"], correct: 1 },
+                { question: "What is ray tracing?", options: ["Tracing rays of light", "A rendering technique that simulates light behavior", "A type of graphics card", "A programming language"], correct: 1 },
+                { question: "What is a pixel?", options: ["A small picture", "The smallest unit of a digital image", "A graphics program", "A type of screen"], correct: 1 },
+                { question: "What is 3D modeling?", options: ["Making 3D objects", "Creating mathematical representations of 3D objects", "A type of animation", "A graphics technique"], correct: 1 },
+{ question: "What is the most common color model used in computer graphics?", options: ["CMYK", "RGB (Red, Green, Blue)", "HSV", "LAB"], correct: 1 },
+                { question: "What is rasterization?", options: ["Creating raster images", "The process of converting vector graphics into pixels", "A type of compression", "A rendering technique"], correct: 1 },
+                { question: "What is ray tracing?", options: ["Tracing rays of light", "A rendering technique that simulates light behavior for realistic images", "A type of animation", "A modeling technique"], correct: 1 },
+                { question: "What is a pixel?", options: ["A type of image", "The smallest unit of a digital image", "A color model", "A graphics card"], correct: 1 },
+                { question: "What is 3D modeling?", options: ["Making 3D objects physically", "The process of creating three-dimensional representations of objects", "A type of animation", "A rendering technique"], correct: 1 },
+                { question: "What is texture mapping?", options: ["Creating textures", "Applying 2D images to 3D surfaces to add detail", "A modeling technique", "A type of shader"], correct: 1 },
+                { question: "What is anti-aliasing?", options: ["Removing aliases", "A technique to reduce jagged edges in digital images", "A type of compression", "A modeling tool"], correct: 1 },
+                { question: "What is a shader in computer graphics?", options: ["Something that provides shade", "A program that determines how surfaces are rendered", "A type of light", "A modeling tool"], correct: 1 },
+                { question: "What is the difference between 2D and 3D graphics?", options: ["No difference", "2D has width and height, 3D adds depth", "2D is older technology", "3D is always better"], correct: 1 },
+                { question: "What is frame rate in computer graphics?", options: ["The rate of frames per building", "The number of images displayed per second", "The size of frames", "The quality of images"], correct: 1 }
+            
+            ],
+            mathematics: [
+                { question: "What is the derivative of x²?", options: ["2x", "x", "2", "x²"], correct: 0 },
+                { question: "What is the value of π (pi) approximately?", options: ["3.14159", "2.71828", "1.41421", "1.73205"], correct: 0 },
+                { question: "What is the quadratic formula?", options: ["x = -b ± √(b²-4ac) / 2a", "x = a + b", "x = ab", "x = a²"], correct: 0 },
+                { question: "What is the sum of angles in a triangle?", options: ["90°", "180°", "270°", "360°"], correct: 1 },
+                { question: "What is the Pythagorean theorem?", options: ["a + b = c", "a² + b² = c²", "a × b = c", "a - b = c"], correct: 1 },
+{ question: "What is the derivative of x²?", options: ["2x", "x", "2", "x²"], correct: 0 },
+                { question: "What is the integral of 2x?", options: ["x²", "x² + C", "2", "2x + C"], correct: 1 },
+                { question: "What is the value of sin(90°)?", options: ["0", "1", "-1", "undefined"], correct: 1 },
+                { question: "What is the quadratic formula?", options: ["x = -b ± √(b²-4ac)/2a", "x = b ± √(b²+4ac)/2a", "x = -b ± √(b²+4ac)/2a", "x = b ± √(b²-4ac)/2a"], correct: 0 },
+                { question: "What is the slope of the line y = 3x + 2?", options: ["2", "3", "5", "1"], correct: 1 },
+                { question: "What is log₁₀(100)?", options: ["1", "2", "10", "100"], correct: 1 },
+                { question: "What is the area of a circle with radius r?", options: ["πr", "2πr", "πr²", "2πr²"], correct: 2 },
+                { question: "What is the sum of angles in a triangle?", options: ["90°", "180°", "270°", "360°"], correct: 1 },
+                { question: "What is the factorial of 5?", options: ["25", "120", "100", "60"], correct: 1 },
+                { question: "What is the value of √64?", options: ["6", "7", "8", "9"], correct: 2 }
+            
+            ],
+            physics: [
+                { question: "What is Newton's second law?", options: ["F = ma", "E = mc²", "v = u + at", "s = ut + ½at²"], correct: 0 },
+                { question: "What is the unit of force?", options: ["Joule", "Newton", "Watt", "Pascal"], correct: 1 },
+                { question: "What is the acceleration due to gravity on Earth?", options: ["9.8 m/s²", "10 m/s²", "8.9 m/s²", "11 m/s²"], correct: 0 },
+                { question: "What is the formula for kinetic energy?", options: ["½mv²", "mgh", "mc²", "Fd"], correct: 0 },
+                { question: "What is the law of conservation of energy?", options: ["Energy can be created", "Energy cannot be created or destroyed, only transformed", "Energy always increases", "Energy always decreases"], correct: 1 },
+{ question: "What is Newton's second law?", options: ["F = ma", "E = mc²", "v = u + at", "s = ut + ½at²"], correct: 0 },
+                { question: "What is the unit of force?", options: ["Joule", "Newton", "Watt", "Pascal"], correct: 1 },
+                { question: "What is the speed of light in vacuum?", options: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10¹⁰ m/s", "3×10⁴ m/s"], correct: 0 },
+                { question: "What is the formula for kinetic energy?", options: ["½mv²", "mgh", "mc²", "Fd"], correct: 0 },
+                { question: "What is Ohm's law?", options: ["V = IR", "P = IV", "F = qE", "E = hf"], correct: 0 },
+                { question: "What is the acceleration due to gravity on Earth?", options: ["9.8 m/s²", "10 m/s²", "8.9 m/s²", "11 m/s²"], correct: 0 },
+                { question: "What is the unit of power?", options: ["Joule", "Newton", "Watt", "Pascal"], correct: 2 },
+                { question: "What is the formula for momentum?", options: ["mv", "ma", "Ft", "½mv²"], correct: 0 },
+                { question: "What is the frequency of a wave with period T?", options: ["T", "1/T", "2T", "T²"], correct: 1 },
+                { question: "What is absolute zero in Celsius?", options: ["-273°C", "-100°C", "0°C", "-373°C"], correct: 0 }
+            
+            ],
+            chemistry: [
+                { question: "What is the chemical symbol for gold?", options: ["Go", "Au", "Ag", "Al"], correct: 1 },
+                { question: "What is the process of a solid turning directly into a gas?", options: ["Melting", "Evaporation", "Sublimation", "Condensation"], correct: 2 },
+                { question: "What is the pH of pure water?", options: ["6", "7", "8", "9"], correct: 1 },
+                { question: "What is an atom?", options: ["The smallest unit of matter", "The basic unit of a chemical element", "A molecule", "A compound"], correct: 1 },
+                { question: "What is the periodic table?", options: ["A table of periods", "An arrangement of chemical elements by atomic number", "A time table", "A mathematical table"], correct: 1 },
+{ question: "What is the chemical symbol for gold?", options: ["Go", "Au", "Ag", "Al"], correct: 1 },
+                { question: "What is the atomic number of carbon?", options: ["4", "6", "8", "12"], correct: 1 },
+                { question: "What is the pH of pure water?", options: ["6", "7", "8", "9"], correct: 1 },
+                { question: "What is Avogadro's number?", options: ["6.02×10²³", "6.02×10²²", "6.02×10²⁴", "6.02×10²¹"], correct: 0 },
+                { question: "What is the most abundant gas in Earth's atmosphere?", options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"], correct: 2 },
+                { question: "What is the chemical formula for water?", options: ["HO", "H₂O", "H₃O", "HO₂"], correct: 1 },
+                { question: "What is the noble gas in period 2?", options: ["Helium", "Neon", "Argon", "Krypton"], correct: 1 },
+                { question: "What is the charge of a proton?", options: ["-1", "0", "+1", "+2"], correct: 2 },
+                { question: "What is the molecular formula for methane?", options: ["CH₂", "CH₃", "CH₄", "C₂H₄"], correct: 2 },
+                { question: "What is the process of a solid turning directly into a gas?", options: ["Melting", "Evaporation", "Sublimation", "Condensation"], correct: 2 }
+            
+            ],
+            biology: [
+                { question: "What is the powerhouse of the cell?", options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"], correct: 1 },
+                { question: "What is DNA?", options: ["Deoxyribonucleic acid - genetic material", "A type of protein", "A vitamin", "A hormone"], correct: 0 },
+                { question: "What is photosynthesis?", options: ["Cell division", "The process by which plants make food using sunlight", "Breathing in plants", "Plant reproduction"], correct: 1 },
+                { question: "What is evolution?", options: ["Change in species over time", "Growth of organisms", "Cell division", "Reproduction"], correct: 0 },
+                { question: "What is an ecosystem?", options: ["A type of animal", "A community of living organisms and their environment", "A plant system", "A weather system"], correct: 1 },
+{ question: "What is the powerhouse of the cell?", options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"], correct: 1 },
+                { question: "What is the process by which plants make food?", options: ["Respiration", "Photosynthesis", "Digestion", "Excretion"], correct: 1 },
+                { question: "How many chambers does a human heart have?", options: ["2", "3", "4", "5"], correct: 2 },
+                { question: "What is DNA?", options: ["Deoxyribonucleic acid", "Ribonucleic acid", "Protein", "Carbohydrate"], correct: 0 },
+                { question: "What is the largest organ in the human body?", options: ["Liver", "Brain", "Lungs", "Skin"], correct: 3 },
+                { question: "What is the basic unit of heredity?", options: ["Chromosome", "Gene", "Allele", "DNA"], correct: 1 },
+                { question: "What type of blood cells fight infection?", options: ["Red blood cells", "White blood cells", "Platelets", "Plasma"], correct: 1 },
+                { question: "What is the study of fungi called?", options: ["Botany", "Zoology", "Mycology", "Ecology"], correct: 2 },
+                { question: "How many bones are in an adult human body?", options: ["206", "208", "210", "212"], correct: 0 },
+                { question: "What is the main function of red blood cells?", options: ["Fight infection", "Carry oxygen", "Clot blood", "Produce hormones"], correct: 1 }
+            
+            ],
+            history: [
+                { question: "In which year did World War II end?", options: ["1944", "1945", "1946", "1947"], correct: 1 },
+                { question: "Who was the first President of the United States?", options: ["Thomas Jefferson", "George Washington", "John Adams", "Benjamin Franklin"], correct: 1 },
+                { question: "When did the Berlin Wall fall?", options: ["1987", "1989", "1991", "1993"], correct: 1 },
+                { question: "Which ancient wonder of the world was located in Egypt?", options: ["Hanging Gardens", "Great Pyramid of Giza", "Colossus of Rhodes", "Lighthouse of Alexandria"], correct: 1 },
+                { question: "When did the Industrial Revolution begin?", options: ["17th century", "18th century", "19th century", "20th century"], correct: 1 },
+ { question: "In which year did World War II end?", options: ["1944", "1945", "1946", "1947"], correct: 1 },
+                { question: "Who was the first President of the United States?", options: ["Thomas Jefferson", "John Adams", "George Washington", "Benjamin Franklin"], correct: 2 },
+                { question: "Which empire was ruled by Julius Caesar?", options: ["Greek Empire", "Roman Empire", "Byzantine Empire", "Ottoman Empire"], correct: 1 },
+                { question: "In which year did the Berlin Wall fall?", options: ["1987", "1988", "1989", "1990"], correct: 2 },
+                { question: "Who wrote the Declaration of Independence?", options: ["George Washington", "Benjamin Franklin", "John Adams", "Thomas Jefferson"], correct: 3 },
+                { question: "Which ancient wonder was located in Alexandria?", options: ["Hanging Gardens", "Lighthouse", "Colossus", "Mausoleum"], correct: 1 },
+                { question: "When did the American Civil War begin?", options: ["1860", "1861", "1862", "1863"], correct: 1 },
+                { question: "Who was known as the Iron Lady?", options: ["Queen Elizabeth II", "Margaret Thatcher", "Indira Gandhi", "Golda Meir"], correct: 1 },
+                { question: "Which revolution began in 1789?", options: ["American Revolution", "Industrial Revolution", "French Revolution", "Russian Revolution"], correct: 2 },
+                { question: "Who discovered America in 1492?", options: ["Vasco da Gama", "Christopher Columbus", "Ferdinand Magellan", "Marco Polo"], correct: 1 }
+            
+            ],
+            english: [
+                { question: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], correct: 1 },
+                { question: "What is a noun?", options: ["An action word", "A person, place, thing, or idea", "A describing word", "A connecting word"], correct: 1 },
+                { question: "What is the past tense of 'go'?", options: ["Goed", "Gone", "Went", "Going"], correct: 2 },
+                { question: "What is alliteration?", options: ["Repetition of similar sounds at the beginning of words", "A type of poem", "A figure of speech", "A grammar rule"], correct: 0 },
+                { question: "What is the main idea of a paragraph?", options: ["The first sentence", "The central point or message", "The last sentence", "The longest sentence"], correct: 1 },
+{ question: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], correct: 1 },
+                { question: "What is a synonym for 'happy'?", options: ["Sad", "Angry", "Joyful", "Tired"], correct: 2 },
+                { question: "What is the past tense of 'go'?", options: ["Gone", "Going", "Went", "Goes"], correct: 2 },
+                { question: "Which of these is a noun?", options: ["Run", "Beautiful", "Quickly", "Book"], correct: 3 },
+                { question: "What is an antonym for 'hot'?", options: ["Warm", "Cold", "Cool", "Freezing"], correct: 1 },
+                { question: "Who wrote '1984'?", options: ["George Orwell", "Aldous Huxley", "Ray Bradbury", "H.G. Wells"], correct: 0 },
+                { question: "What is a metaphor?", options: ["A direct comparison", "An indirect comparison", "A question", "An exclamation"], correct: 1 },
+                { question: "What is the plural of 'child'?", options: ["Childs", "Children", "Childes", "Childrens"], correct: 1 },
+                { question: "Which is a proper noun?", options: ["city", "London", "building", "person"], correct: 1 },
+                { question: "What is alliteration?", options: ["Repetition of sounds", "Repetition of words", "Repetition of ideas", "Repetition of sentences"], correct: 0 }
+           
+            ]
+        };
+
+        // Motivational quotes
+        const dailyQuotes = [
+            "The only way to learn mathematics is to do mathematics. – Paul Halmos",
+            "Education is the most powerful weapon which you can use to change the world. – Nelson Mandela",
+            "The beautiful thing about learning is that no one can take it away from you. – B.B. King",
+            "Success is the sum of small efforts repeated day in and day out. – Robert Collier",
+            "The expert in anything was once a beginner. – Helen Hayes",
+            "Learning never exhausts the mind. – Leonardo da Vinci",
+            "The more that you read, the more things you will know. – Dr. Seuss",
+            "Study hard what interests you the most in the most undisciplined, irreverent and original manner possible. – Richard Feynman"
+        ];
+
+        // Time display function
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('timeDisplay').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Study timer functions
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateStudyTimer() {
+            document.getElementById('studyTimer').textContent = formatTime(studyTimerSeconds);
+        }
+
+        function startStudyTimer() {
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                studyTimerInterval = setInterval(() => {
+                    studyTimerSeconds++;
+                    updateStudyTimer();
+                }, 1000);
+                document.getElementById('startTimerBtn').disabled = true;
+                document.getElementById('pauseTimerBtn').disabled = false;
+            }
+        }
+
+        function pauseStudyTimer() {
+            if (isTimerRunning) {
+                isTimerRunning = false;
+                clearInterval(studyTimerInterval);
+                document.getElementById('startTimerBtn').disabled = false;
+                document.getElementById('pauseTimerBtn').disabled = true;
+            }
+        }
+
+        function resetStudyTimer() {
+            isTimerRunning = false;
+            clearInterval(studyTimerInterval);
+            studyTimerSeconds = 0;
+            updateStudyTimer();
+            document.getElementById('startTimerBtn').disabled = false;
+            document.getElementById('pauseTimerBtn').disabled = true;
+        }
+
+        // Initialize time display
+        setInterval(updateTime, 1000);
+        updateTime();
+        updateStudyTimer();
+
+        // Login functions
+        function switchLoginTab(tab) {
+            const tabs = document.querySelectorAll('.login-tab');
+            const forms = document.querySelectorAll('.login-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchLoginTab('${tab}')"]`).classList.add('active');
+            document.getElementById(tab === 'signin' ? 'signinForm' : 'signupForm').classList.add('active');
+        }
+
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Show navbar for all pages except login and register
+            const navbar = document.getElementById('navbar');
+            if (pageId === 'login' || pageId === 'register') {
+                navbar.style.display = 'none';
+            } else {
+                navbar.style.display = 'block';
+            }
+            
+            // Load page-specific data
+            if (pageId === 'profile') {
+                loadProfile();
+            } else if (pageId === 'dashboard') {
+                updateDashboard();
+            } else if (pageId === 'study-plan') {
+                updateStudyPlan();
+            } else if (pageId === 'progress') {
+                updateProgressPage();
+            }
+        }
+
+        // Login form handling
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            
+            // Simple demo authentication
+            if (email === 'email@demo.com' && password === 'password123') {
+                const savedUser = localStorage.getItem('studyBuddyUser');
+                if (savedUser) {
+                    userData = JSON.parse(savedUser);
+                    showPage('home');
+                } else {
+                    showPage('register');
+                }
+            } else {
+                alert('Invalid credentials. Use email@demo.com / password123 for demo.');
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Save user credentials (in real app, this would be sent to server)
+            localStorage.setItem('userCredentials', JSON.stringify({ email, password }));
+            showPage('register');
+        });
+
+        // Registration form handling
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            userData = {
+                fullName: formData.get('fullName'),
+                studyLevel: formData.get('studyLevel'),
+                subjects: formData.get('subjects'),
+                studyTime: formData.get('studyTime'),
+                examDate: formData.get('examDate'),
+                studyGoals: formData.get('studyGoals')
+            };
+            
+            // Initialize user progress
+            userProgress = {
+                scores: [],
+                subjects: {},
+                totalQuizzes: 0,
+                averageScore: 0,
+                dailyProgress: 0
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('studyBuddyUser', JSON.stringify(userData));
+            localStorage.setItem('studyBuddyProgress', JSON.stringify(userProgress));
+            
+            // Redirect to home page
+            showPage('home');
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear user session but keep data
+                showPage('login');
+                
+                // Reset timer
+                resetStudyTimer();
+                
+                // Clear forms
+                document.getElementById('signinForm').reset();
+                document.getElementById('signupForm').reset();
+            }
+        }
+
+        // Load user data on page load
+        window.addEventListener('load', function() {
+            const savedUser = localStorage.getItem('studyBuddyUser');
+            const savedProgress = localStorage.getItem('studyBuddyProgress');
+            
+            if (savedUser) {
+                userData = JSON.parse(savedUser);
+                if (savedProgress) {
+                    userProgress = JSON.parse(savedProgress);
+                }
+                // Still show login page first for security
+                showPage('login');
+            }
+        });
+
+        // Dashboard functions
+        function updateDashboard() {
+            if (userData.fullName) {
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${userData.fullName}!`;
+            }
+            
+            // Update daily quote
+            const randomQuote = dailyQuotes[Math.floor(Math.random() * dailyQuotes.length)];
+            document.getElementById('dailyQuote').textContent = randomQuote;
+            
+            if (userData.subjects) {
+                const subjects = userData.subjects.split(',').map(s => s.trim());
+                const sessionHtml = subjects.slice(0, 2).map(subject => 
+                    `${subject} – ${Math.floor(Math.random() * 60 + 30)} mins`
+                ).join(', ');
+                document.getElementById('todaySession').innerHTML = `
+                    <p>${sessionHtml}</p>
+                    <button class="btn btn-small" onclick="showQuizSetup()" style="margin-top: 1rem;">Start Quiz</button>
+                `;
+            }
+            
+            // Update progress circle
+            updateProgressCircle();
+        }
+
+        function updateProgressCircle() {
+            const progressPercent = userProgress.dailyProgress || 0;
+            const circle = document.getElementById('progressCircle');
+            const text = document.getElementById('progressText');
+            
+            const circumference = 2 * Math.PI * 52;
+            const offset = circumference - (progressPercent / 100) * circumference;
+            
+            circle.style.strokeDashoffset = offset;
+            text.textContent = `${progressPercent}% Complete`;
+            
+            if (progressPercent > 0) {
+                text.innerHTML += `<br><small>Keep up the great work!</small>`;
+            }
+        }
+
+        // Video links functions
+        function updateVideoLinks() {
+            const selectedSubject = document.getElementById('quizSubject').value;
+            const videoSection = document.getElementById('videoLinksSection');
+            const videoContainer = document.getElementById('videoLinksContainer');
+            const videoTitle = document.getElementById('videoSubjectTitle');
+            
+            if (selectedSubject && subjectVideoLinks[selectedSubject]) {
+                const subjectName = selectedSubject.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+                
+                videoTitle.textContent = `Recommended videos for ${subjectName}`;
+                videoContainer.innerHTML = '';
+                
+                subjectVideoLinks[selectedSubject].forEach((link, index) => {
+                    const videoLink = document.createElement('a');
+                    videoLink.href = link;
+                    videoLink.target = '_blank';
+                    videoLink.className = 'video-link';
+                    videoLink.textContent = `${subjectName} Tutorial ${index + 1}`;
+                    videoContainer.appendChild(videoLink);
+                });
+                
+                videoSection.classList.add('active');
+            } else {
+                videoSection.classList.remove('active');
+            }
+        }
+
+        // Quiz setup functions
+        function showQuizSetup() {
+            document.getElementById('quizSetup').style.display = 'block';
+            
+            // Populate subject dropdown with user's subjects
+            if (userData.subjects) {
+                const subjectSelect = document.getElementById('quizSubject');
+                const currentOptions = Array.from(subjectSelect.options).map(opt => opt.value);
+                
+                const subjects = userData.subjects.split(',').map(s => s.trim().toLowerCase().replace(/\s+/g, '-'));
+                subjects.forEach(subject => {
+                    if (quizQuestions[subject] && !currentOptions.includes(subject)) {
+                        const option = document.createElement('option');
+                        option.value = subject;
+                        option.textContent = subject.split('-').map(word => 
+                            word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ');
+                        subjectSelect.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        function startCustomQuiz() {
+            const subject = document.getElementById('quizSubject').value;
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+            
+            if (!subject) {
+                alert('Please select a subject first!');
+                return;
+            }
+            
+            const availableQuestions = quizQuestions[subject] || quizQuestions.mathematics;
+            
+            // Shuffle and select questions
+            const shuffled = [...availableQuestions].sort(() => 0.5 - Math.random());
+            quizData = shuffled.slice(0, Math.min(questionCount, shuffled.length));
+            
+            currentQuiz = 0;
+            quizAnswers = {};
+            
+            document.getElementById('quizSetup').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'block';
+            
+            updateQuizProgress();
+            displayQuizQuestion();
+        }
+
+        function updateQuizProgress() {
+            const progress = ((currentQuiz) / quizData.length) * 100;
+            document.getElementById('quizProgressBar').style.width = `${progress}%`;
+            document.getElementById('quizProgressText').textContent = `Question ${currentQuiz + 1} of ${quizData.length}`;
+        }
+
+        function displayQuizQuestion() {
+            if (currentQuiz >= quizData.length) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitQuizBtn').style.display = 'block';
+                return;
+            }
+            
+            const question = quizData[currentQuiz];
+            const quizContent = document.getElementById('quizContent');
+            
+            quizContent.innerHTML = `
+                <div class="quiz-question">
+                    <h4>${question.question}</h4>
+                    <ul class="quiz-options">
+                        ${question.options.map((option, index) => `
+                            <li onclick="selectQuizAnswer(${index})" id="option_${index}">
+                                <input type="radio" name="q${currentQuiz}" value="${index}" id="q${currentQuiz}_${index}" ${quizAnswers[currentQuiz] === index ? 'checked' : ''}>
+                                <label for="q${currentQuiz}_${index}">${option}</label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            // Clear previous feedback
+            document.getElementById('quizFeedback').innerHTML = '';
+            
+            // Show/hide navigation buttons
+            document.getElementById('prevBtn').style.display = currentQuiz > 0 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = currentQuiz < quizData.length - 1 ? 'block' : 'none';
+            document.getElementById('submitQuizBtn').style.display = currentQuiz === quizData.length - 1 ? 'block' : 'none';
+            
+            updateQuizProgress();
+        }
+
+        function selectQuizAnswer(selectedIndex) {
+            const question = quizData[currentQuiz];
+            const options = document.querySelectorAll(`#quizContent .quiz-options li`);
+            const feedback = document.getElementById('quizFeedback');
+            
+            // Store the answer
+            quizAnswers[currentQuiz] = selectedIndex;
+            
+            // Check the radio button
+            document.getElementById(`q${currentQuiz}_${selectedIndex}`).checked = true;
+            
+            // Reset all option styles
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect', 'neutral');
+            });
+            
+            // Highlight correct and incorrect answers
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && selectedIndex !== question.correct) {
+                    option.classList.add('incorrect');
+                } else if (selectedIndex !== question.correct) {
+                    option.classList.add('neutral');
+                }
+            });
+            
+            // Show feedback
+            if (selectedIndex === question.correct) {
+                feedback.innerHTML = `
+                    <div class="quiz-feedback correct">
+                        ✅ Correct! Well done!
+                    </div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="quiz-feedback incorrect">
+                        ❌ Incorrect. The correct answer is: ${question.options[question.correct]}
+                    </div>
+                `;
+            }
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector(`input[name="q${currentQuiz}"]:checked`);
+            if (selected) {
+                if (currentQuiz < quizData.length - 1) {
+                    currentQuiz++;
+                    displayQuizQuestion();
+                }
+            } else {
+                alert('Please select an answer before proceeding.');
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuiz > 0) {
+                currentQuiz--;
+                displayQuizQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            // Ensure current question is answered
+            const selected = document.querySelector(`input[name="q${currentQuiz}"]:checked`);
+            if (selected) {
+                quizAnswers[currentQuiz] = parseInt(selected.value);
+            }
+            
+            let correct = 0;
+            quizData.forEach((question, index) => {
+                if (quizAnswers[index] === question.correct) {
+                    correct++;
+                }
+            });
+            
+            const score = Math.round((correct / quizData.length) * 100);
+            const subject = document.getElementById('quizSubject').value;
+            
+            // Update user progress
+            userProgress.scores.push(score);
+            userProgress.totalQuizzes++;
+            userProgress.averageScore = Math.round(userProgress.scores.reduce((a, b) => a + b, 0) / userProgress.scores.length);
+            
+            if (!userProgress.subjects[subject]) {
+                userProgress.subjects[subject] = [];
+            }
+            userProgress.subjects[subject].push(score);
+            
+            // Update daily progress
+            userProgress.dailyProgress = Math.min(100, userProgress.dailyProgress + 20);
+            
+            // Save progress
+            localStorage.setItem('studyBuddyProgress', JSON.stringify(userProgress));
+            
+            document.getElementById('quizResults').innerHTML = `
+                <div style="background: ${score >= 70 ? '#d4edda' : '#f8d7da'}; color: ${score >= 70 ? '#155724' : '#721c24'}; padding: 1rem; border-radius: 10px; text-align: center;">
+                    <h4>Quiz Complete!</h4>
+                    <p>You scored ${correct}/${quizData.length} (${score}%)</p>
+                    <p>${score >= 70 ? 'Excellent work! Keep it up!' : 'Good effort! Keep practicing to improve!'}</p>
+                    <button class="btn btn-small" onclick="resetQuiz()" style="margin-top: 1rem;">Take Another Quiz</button>
+                </div>
+            `;
+            
+            document.getElementById('submitQuizBtn').style.display = 'none';
+            updateProgressCircle();
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('quizSetup').style.display = 'block';
+            document.getElementById('quizResults').innerHTML = '';
+            document.getElementById('quizFeedback').innerHTML = '';
+            document.getElementById('nextBtn').style.display = 'block';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('videoLinksSection').classList.remove('active');
+        }
+
+        // Study Plan functions
+        function updateStudyPlan() {
+            if (userData.fullName) {
+                document.getElementById('studyPlanTitle').textContent = `${userData.fullName}'s Study Plan`;
+            }
+        }
+
+        function addDailyTask() {
+            const dailyPlan = document.getElementById('dailyPlan');
+            const newTask = document.createElement('div');
+            newTask.style.cssText = 'display: flex; gap: 1rem; margin: 1rem 0; align-items: center;';
+            newTask.innerHTML = `
+                <input type="text" placeholder="Subject - Topic" style="flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="time" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                <span>60 mins</span>
+                <button onclick="this.parentElement.remove()" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 5px; cursor: pointer;">×</button>
+            `;
+            dailyPlan.insertBefore(newTask, dailyPlan.lastElementChild);
+        }
+
+        function toggleEditMode() {
+            isWeeklyEditing = !isWeeklyEditing;
+            const goalTexts = document.querySelectorAll('.goal-text');
+            const goalInputs = document.querySelectorAll('.goal-input');
+            const editBtn = document.getElementById('editWeeklyBtn');
+            const saveBtn = document.getElementById('saveWeeklyBtn');
+            
+            if (isWeeklyEditing) {
+                goalTexts.forEach(text => text.style.display = 'none');
+                goalInputs.forEach(input => {
+                    input.style.display = 'block';
+                    input.classList.add('edit-mode');
+                });
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'block';
+            } else {
+                goalTexts.forEach(text => text.style.display = 'block');
+                goalInputs.forEach(input => {
+                    input.style.display = 'none';
+                    input.classList.remove('edit-mode');
+                });
+                editBtn.style.display = 'block';
+                saveBtn.style.display = 'none';
+            }
+        }
+
+        function saveWeeklyPlan() {
+            const goalInputs = document.querySelectorAll('.goal-input');
+            const goalTexts = document.querySelectorAll('.goal-text');
+            
+            goalInputs.forEach((input, index) => {
+                goalTexts[index].textContent = input.value;
+            });
+            
+            // Save to localStorage
+            const weeklyPlan = Array.from(goalInputs).map(input => input.value);
+            localStorage.setItem('studyBuddyWeeklyPlan', JSON.stringify(weeklyPlan));
+            
+            toggleEditMode();
+            
+            // Show save confirmation
+            const saveBtn = document.getElementById('saveWeeklyBtn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Saved!';
+            saveBtn.style.background = '#28a745';
+            setTimeout(() => {
+                saveBtn.textContent = originalText;
+                saveBtn.style.background = '';
+            }, 2000);
+        }
+
+        // Progress page functions
+        function updateProgressPage() {
+            updatePerformanceStats();
+            updateSubjectScores();
+            updateProgressChart();
+        }
+
+        function updatePerformanceStats() {
+            document.getElementById('overallScore').textContent = `${userProgress.averageScore}%`;
+            
+            const improvement = userProgress.scores.length >= 2 ? 
+                userProgress.scores[userProgress.scores.length - 1] - userProgress.scores[userProgress.scores.length - 2] : 0;
+            document.getElementById('weeklyImprovement').textContent = `${improvement >= 0 ? '+' : ''}${improvement}%`;
+            
+            // Find top subject
+            let topSubject = 'Not available';
+            let topScore = 0;
+            Object.keys(userProgress.subjects).forEach(subject => {
+                const scores = userProgress.subjects[subject];
+                const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+                if (avgScore > topScore) {
+                    topScore = avgScore;
+                    topSubject = `${subject.charAt(0).toUpperCase() + subject.slice(1)} (${Math.round(avgScore)}%)`;
+                }
+            });
+            document.getElementById('topSubject').textContent = topSubject;
+            document.getElementById('quizzesCompleted').textContent = userProgress.totalQuizzes;
+        }
+
+        function updateSubjectScores() {
+            const container = document.getElementById('subjectScores');
+            container.innerHTML = '';
+            
+            Object.keys(userProgress.subjects).forEach(subject => {
+                const scores = userProgress.subjects[subject];
+                const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+                
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = `${avgScore}%`;
+                bar.innerHTML = `${avgScore}<span class="bar-label">${subject.charAt(0).toUpperCase() + subject.slice(1)}</span>`;
+                container.appendChild(bar);
+            });
+            
+            if (Object.keys(userProgress.subjects).length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Take some quizzes to see your subject scores!</p>';
+            }
+        }
+
+        function updateProgressChart() {
+            if (userProgress.scores.length === 0) return;
+            
+            const scores = userProgress.scores.slice(-10); // Show last 10 scores
+            const points = [];
+            const pointsGroup = document.getElementById('progressPoints');
+            pointsGroup.innerHTML = '';
+            
+            scores.forEach((score, index) => {
+                const x = 50 + (index * (700 / Math.max(scores.length - 1, 1)));
+                const y = 220 - (score * 2); // Scale score to chart height
+                points.push(`${x},${y}`);
+                
+                // Add point circle
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('class', 'chart-point');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', 4);
+                pointsGroup.appendChild(circle);
+            });
+            
+            document.getElementById('progressLine').setAttribute('points', points.join(' '));
+        }
+
+        // Profile functions
+        function loadProfile() {
+            if (userData.fullName) {
+                document.getElementById('profileName').value = userData.fullName || '';
+                document.getElementById('profileLevel').value = userData.studyLevel || '';
+                document.getElementById('profileSubjects').value = userData.subjects || '';
+                document.getElementById('profileStudyTime').value = userData.studyTime || '';
+                document.getElementById('profileExamDate').value = userData.examDate || '';
+                document.getElementById('profileGoals').value = userData.studyGoals || '';
+                
+                // Disable all inputs initially
+                toggleProfileInputs(false);
+            }
+        }
+
+        function editProfile() {
+            isEditing = true;
+            toggleProfileInputs(true);
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'block';
+        }
+
+        function saveProfile() {
+            userData.fullName = document.getElementById('profileName').value;
+            userData.studyLevel = document.getElementById('profileLevel').value;
+            userData.subjects = document.getElementById('profileSubjects').value;
+            userData.studyTime = document.getElementById('profileStudyTime').value;
+            userData.examDate = document.getElementById('profileExamDate').value;
+            userData.studyGoals = document.getElementById('profileGoals').value;
+            
+            localStorage.setItem('studyBuddyUser', JSON.stringify(userData));
+            
+            isEditing = false;
+            toggleProfileInputs(false);
+            document.getElementById('editBtn').style.display = 'block';
+            document.getElementById('saveBtn').style.display = 'none';
+            
+            alert('Profile updated successfully!');
+        }
+
+        function toggleProfileInputs(enabled) {
+            const inputs = document.querySelectorAll('#profileForm input, #profileForm select, #profileForm textarea');
+            inputs.forEach(input => {
+                input.disabled = !enabled;
+            });
+        }
+
+        // Summarizer functions
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.querySelector('.upload-area h3').textContent = `File Selected: ${file.name}`;
+            }
+        }
+
+        function generateSummary() {
+            const fileInput = document.getElementById('fileInput');
+            const linkInput = document.getElementById('linkInput');
+            const textInput = document.getElementById('textInput');
+            const summaryOutput = document.getElementById('summaryOutput');
+            
+            let content = '';
+            let sourceType = '';
+            
+            if (fileInput.files.length > 0) {
+                content = fileInput.files[0].name;
+                sourceType = 'File';
+            } else if (linkInput.value) {
+                content = linkInput.value;
+                sourceType = 'Link';
+            } else if (textInput.value.trim()) {
+                content = textInput.value.trim();
+                sourceType = 'Text';
+            } else {
+                alert('Please upload a file, paste a link, or enter text content first.');
+                return;
+            }
+            
+            summaryOutput.innerHTML = '<div style="text-align: center; padding: 2rem;"><div style="font-size: 2rem; margin-bottom: 1rem;">🤖</div><p>AI is analyzing your content... Please wait.</p></div>';
+            
+            // Simulate AI processing with more realistic delay
+            setTimeout(() => {
+                const summaries = [
+                    {
+                        title: "Educational Content Analysis",
+                        keyPoints: [
+                            "Core concepts focus on fundamental principles and theoretical frameworks",
+                            "Practical applications demonstrate real-world implementation strategies",
+                            "Research methodology emphasizes evidence-based approaches",
+                            "Learning outcomes are structured to build progressive understanding"
+                        ],
+                        mainIdeas: "The content presents a comprehensive overview of educational methodologies with emphasis on student-centered learning approaches. Key themes include active learning strategies, assessment techniques, and curriculum design principles.",
+                        conclusion: "Implementation of these educational strategies requires careful planning and consistent application to achieve optimal learning outcomes."
+                    },
+                    {
+                        title: "Scientific Research Summary",
+                        keyPoints: [
+                            "Methodology follows rigorous scientific standards and protocols",
+                            "Data analysis reveals significant patterns and correlations",
+                            "Results support the primary hypothesis with statistical significance",
+                            "Implications extend beyond the immediate scope of the study"
+                        ],
+                        mainIdeas: "This research contributes valuable insights to the field through systematic investigation and analysis. The findings demonstrate clear relationships between variables and provide foundation for future research directions.",
+                        conclusion: "The study's conclusions offer practical applications and suggest areas for continued investigation and development."
+                    },
+                    {
+                        title: "Technical Documentation Review",
+                        keyPoints: [
+                            "System architecture follows industry best practices and standards",
+                            "Implementation details provide clear guidance for developers",
+                            "Performance metrics demonstrate efficiency and scalability",
+                            "Security considerations address modern threat landscapes"
+                        ],
+                        mainIdeas: "The documentation provides comprehensive coverage of technical specifications and implementation guidelines. Focus areas include system design, development processes, and operational considerations.",
+                        conclusion: "Following these technical guidelines will ensure robust system implementation and maintainable code architecture."
+                    }
+                ];
+                
+                const randomSummary = summaries[Math.floor(Math.random() * summaries.length)];
+                
+                summaryOutput.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <h4 style="margin: 0;">✨ ${randomSummary.title}</h4>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p><strong>Source:</strong> ${sourceType} - ${sourceType === 'Text' ? content.substring(0, 50) + '...' : content}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: #667eea; margin-bottom: 0.5rem;">📋 Key Points:</h4>
+                        <ul style="padding-left: 1.5rem;">
+                            ${randomSummary.keyPoints.map(point => `<li style="margin: 0.5rem 0;">${point}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: #667eea; margin-bottom: 0.5rem;">💡 Main Ideas:</h4>
+                        <p style="line-height: 1.6;">${randomSummary.mainIdeas}</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 10px; border-left: 4px solid #667eea;">
+                        <h4 style="color: #667eea; margin: 0 0 0.5rem 0;">🎯 Conclusion:</h4>
+                        <p style="margin: 0; font-style: italic;">${randomSummary.conclusion}</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button class="btn btn-small" onclick="clearSummarizer()" style="background: #6c757d;">Clear & Start New</button>
+                    </div>
+                `;
+            }, 3000);
+        }
+
+        function clearSummarizer() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('linkInput').value = '';
+            document.getElementById('textInput').value = '';
+            document.querySelector('.upload-area h3').textContent = 'Upload Document';
+            document.getElementById('summaryOutput').innerHTML = `
+                <h4>Summary will appear here...</h4>
+                <p>Upload a document, paste a link, or enter text content, then click "Generate Summary" to get a concise summary of the key points.</p>
+            `;
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            
+            // Check if user is already registered
+            const savedUser = localStorage.getItem('studyBuddyUser');
+            const savedProgress = localStorage.getItem('studyBuddyProgress');
+            
+            if (savedUser) {
+                userData = JSON.parse(savedUser);
+                if (savedProgress) {
+                    userProgress = JSON.parse(savedProgress);
+                } else {
+                    userProgress = {
+                        scores: [],
+                        subjects: {},
+                        totalQuizzes: 0,
+                        averageScore: 0,
+                        dailyProgress: 0
+                    };
+                }
+            }
+            
+            // Load saved weekly plan
+            const savedWeeklyPlan = localStorage.getItem('studyBuddyWeeklyPlan');
+            if (savedWeeklyPlan) {
+                const weeklyPlan = JSON.parse(savedWeeklyPlan);
+                const goalTexts = document.querySelectorAll('.goal-text');
+                const goalInputs = document.querySelectorAll('.goal-input');
+                
+                weeklyPlan.forEach((goal, index) => {
+                    if (goalTexts[index]) goalTexts[index].textContent = goal;
+                    if (goalInputs[index]) goalInputs[index].value = goal;
+                });
+            }
+            
+            // Always start with login page
+            showPage('login');
+        });
+    </script>
+</body>
+</html>
